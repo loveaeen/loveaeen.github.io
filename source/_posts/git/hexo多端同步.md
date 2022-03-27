@@ -2,7 +2,7 @@
 title: hexo多端同步
 date: 2022-03-26 19:33:33
 categories: git
-tags: hex
+tags: hexo
 excerpt: 这是一篇关于Hexo博客框架如何在git中多端同步的学习记录
 ---
 
