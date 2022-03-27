@@ -27,15 +27,15 @@ git push origin hexo  //push到Github项目的hexo分支上
 
 当我想要在博客与Typora软件中都想要看到文章内引用的本地图片时，发生了渲染错误。博客的服务器端不支持Typora的本地路径引用方式。
 
-为此我查看了一下Fluid的文档，发现官方默认指定了图片存放路径 `public/img` 下。
+为此我查看了一下Hexo的文档，发现官方默认指定了图片存放路径 `source/image` 下。
 
-既然官方限制了，那我便只好更改Typora插入图片时的相关规则
+既然官方要求了，那我便只好更改Typora插入图片时的相关规则
 
-1. Typora -> 偏好设置 -> 图像 -> 插入图片时 (复制到指定路径) `~/hexo/blog/public/img/${filename}` 并勾选下方的所有子项
+1. Typora -> 偏好设置 -> 图像 -> 插入图片时 (复制到指定路径) `~/hexo/blog/source/image/${filename}` 并勾选下方的所有子项
 
-2. 格式 -> 图像 -> 设置图片根目录 -> 选中 `~/hexo/blog/public/` 路径，这一步是保证了博客与Typora都能预览到图片内容
+2. 格式 -> 图像 -> 设置图片根目录 -> 选中 `~/hexo/blog/source` 路径，这一步是保证了博客与Typora都能预览到图片内容
 
-   这一步等同于在文章头部添加 `typora-root-url: ../../../public` 配置项，注意要选到blog文件夹中
+   这一步等同于在文章头部添加 `typora-root-url: ../../` 配置项，注意要选到blog文件夹中
 
 ## 问题
 

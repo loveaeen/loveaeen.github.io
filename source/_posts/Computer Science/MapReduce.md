@@ -4,7 +4,7 @@ date: 2022-03-27 15:32:33
 categories: git
 tags: paper
 math: true
-typora-root-url: ../../../public
+typora-root-url: ../../
 ---
 
 MapReduce: Simplified Data Processing on Large Clusters
@@ -104,7 +104,7 @@ Distributed Sort：Map 函数从每个 record 中抽取出 key，产生键值对
 
 通过将输入数据自动分割成 M 份，Map 函数得以在多台机器上分布式执行。每一个输入块都能并行地在不同的机器上执行。通过划分函数(例如，hash(key) mod R)将中间键划分为 R 份，Reduce 函数也能被分布式地调用。其中划分的数目 R 和划分函数都是由用户指定的。
 
-![OS_3_1](/img/MapReduce/OS_3_1-20220327162940686.png)
+![OS_3_1](/image/MapReduce/OS_3_1-20220327162940686.png)
 
 上图 1 展示了在我们的实现中 MapReduce 全部的流程。当用户程序调用 MapReduce 函数时，接下来的动作将按序发生（图 1 中标记的数字与下面的数字是一一对应的）：
 
@@ -275,7 +275,7 @@ Figure 2 显示了 Computation 随着时间的变化过程。Y 轴代表了输�
 
 输入被分成 64MB 份（M = 15000），而将输出分为 4000 份（R = 4000）。分割成许根据初始的 key 将其分割到 R 份中的一个。
 
-![OS_3_2](/img/MapReduce/OS_3_2-20220327170521059.png)
+![OS_3_2](/image/MapReduce/OS_3_2-20220327170521059.png)
 
 图 3（a）展示了排序程序的正常执行，左上方的图表示读入的速率，在达到峰值 13GB/s 后迅速滑落因为所有的 map tasks 在 200 秒内就已经完成。值得注意的是，输入的速率慢于 grep 操作（对于相同的 M 划分），这是因为对于 sort 操作，花费了一半的事件以及 I/O 带宽用于将中间键值对结果写入本地磁盘，而 grep 操作对应的输出则可以小到忽略不计。
 
