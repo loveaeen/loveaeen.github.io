@@ -1,6 +1,6 @@
 ---
 title: MapReduce
-date: 2022-03-26 19:33:33
+date: 2022-03-27 15:32:33
 categories: git
 tags: paper
 excerpt: MapReduce: Simplified Data Processing on Large Clusters
