@@ -3,6 +3,7 @@ title: MapReduce
 date: 2022-03-27 15:32:33
 categories: git
 tags: paper
+math: true
 typora-root-url: ../../../public
 ---
 
@@ -165,7 +166,7 @@ MapReduce 对于大面积的机器故障是非常具有弹性的。例如，在�
 
 如上所述，我们将 Map 操作分成 M 份，Reduce 操作分成 R 份。在理想的情况下，M 和 R 的值应该要比集群中 worker machine 的数量多得多。让一个 worker 同时进行许多不同的 task 有利于提高动态的负载均衡，同时在一个 worker 故障的时候能尽快恢复。许多已经完成的 Map task 也能尽快地传播到其他所有的 worker machine 上。
 
-在我们的实现中，M 和 R 的大小是有一个实用范围的。因为我们的 master 需要做$O(M+R)$个调度决定，并且还要在内存中保存$O(M*R)$个状态（源自前面所说：**对于每一个已经完成的 Map task，master 会存储由它产生的 R 个中间文件的位置和大小。**）。（但是内存使用的常数还是比较小的，$O(M*R)$个 Map task/Reduce task 状态对，每个的大小大概在一个字节）
+在我们的实现中，M 和 R 的大小是有一个实用范围的。因为我们的 master 需要做$O(M+R)$个调度决定，并且还要在内存中保存$O(M * R)$个状态（源自前面所说：**对于每一个已经完成的 Map task，master 会存储由它产生的 R 个中间文件的位置和大小。**）。（但是内存使用的常数还是比较小的，$O(M*R)$个 Map task/Reduce task 状态对，每个的大小大概在一个字节）
 
 另外，R通常受限于用户，因为每个 Reduce task 的输出都分散在不同的输出文件中。事实上，我们会选择M，使得每个输入文件大概 16MB 到 64MB 的输入文件（因此上文所述的局部性优化会达到最优，减少带宽负担，尽量利用本地存储数据进行 Map task）。而我们会让 R 成为 worker machine 数量的一个较小的倍数。因此，我们通常在进行 MapReduce 操作时，$M=200000，R=5000$，使用 2000 个 worker machine。
 

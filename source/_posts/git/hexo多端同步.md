@@ -32,7 +32,10 @@ git push origin hexo  //push到Github项目的hexo分支上
 既然官方限制了，那我便只好更改Typora插入图片时的相关规则
 
 1. Typora -> 偏好设置 -> 图像 -> 插入图片时 (复制到指定路径) `~/hexo/blog/public/img/${filename}` 并勾选下方的所有子项
+
 2. 格式 -> 图像 -> 设置图片根目录 -> 选中 `~/hexo/blog/public/` 路径，这一步是保证了博客与Typora都能预览到图片内容
+
+   这一步等同于在文章头部添加 `typora-root-url: ../../../public` 配置项，注意要选到blog文件夹中
 
 ## 问题
 

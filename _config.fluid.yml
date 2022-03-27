@@ -106,6 +106,13 @@ index:
   slogan:
     enable: true
     text: 过程用心，结果随缘。
+# latex
+post:
+  math:
+    enable: true
+    specific: true # 开启此项的话，文章头部必须启用 math: true 才可以用latex公式
+    engine: mathjax
+
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
