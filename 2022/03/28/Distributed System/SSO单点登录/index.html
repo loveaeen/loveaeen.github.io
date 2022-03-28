@@ -1,0 +1,497 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="单点登录(SingleSignOn，SSO)，就是通过用户的一次性鉴别登录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SSO单点登录">
+<meta property="og:url" content="http://example.com/2022/03/28/Distributed%20System/SSO%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/index.html">
+<meta property="og:site_name" content="Loveaeen">
+<meta property="og:description" content="单点登录(SingleSignOn，SSO)，就是通过用户的一次性鉴别登录。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-28T03:43:12.000Z">
+<meta property="article:modified_time" content="2022-03-28T03:56:07.997Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>SSO单点登录 - Loveaeen</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Loveaeen</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="SSO单点登录">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-28 11:43" pubdate>
+        2022年3月28日 中午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.5k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      30 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">SSO单点登录</h1>
+            
+            <div class="markdown-body">
+              <h2 id="同域名方式"><a href="#同域名方式" class="headerlink" title="同域名方式"></a>同域名方式</h2><ol>
+<li><p><strong>使用共享Cookie来解决Token共享问题。</strong></p>
+<p>所谓共享Cookie，就是Cookie设置为顶域名，然后就可以在二级域名下的共享，举个例子：写在父域名stp.com下的Cookie，<a target="_blank" rel="noopener" href="http://在s1.stp.com/">在s1.stp.com</a>、s2.stp.com等子域名都是可以共享访问的。</p>
+</li>
+<li><p><strong>使用Redis来解决Session共享问题。</strong></p>
+<p>Cookie的问题解决了，我们再来看看session的问题。我们在sso系统登录了，这时再访问app1，Cookie也带到了app1的服务端（Server），app1的服务端怎么找到这个Cookie对应的Session呢？这里就要把 3 个系统的Session共享，采用Redis来实现。</p>
+</li>
+</ol>
+<h3 id="Shiro-Session模式"><a href="#Shiro-Session模式" class="headerlink" title="Shiro Session模式"></a>Shiro Session模式</h3><p>Shiro标准模式是基于Session来做的，SessionID存储在Cookie里。也就意味着如果我们多个系统都采用Shiro框架认证。</p>
+<p>那么当我们删除了Redis的Session后，所有系统都会全部注销。</p>
+<h3 id="Sa-Token"><a href="#Sa-Token" class="headerlink" title="Sa-Token"></a>Sa-Token</h3><p>用户登录成功，会创建多个Session对象（其实就是Map集合之类的）存储到Redis里面，再返回浏览器一个Token标识，后续请求服务器检验该Cookie中的Token。</p>
+<p>该Token里面存储了用户信息，是否登录等。</p>
+<p>用户访问其他系统时，网关拦截校验Cookie中的Token是否正确，是否登录，然后再交由后续登录方法给用户加权限信息。</p>
+<p>当用户点击某系统的注销后，先删除Cookie，再删除Redis里的Session信息。</p>
+<h3 id="JWT"><a href="#JWT" class="headerlink" title="JWT"></a>JWT</h3><p>JWT存入到Cookie里面，A系统首先登录，然后JWT存入到顶级域名的Cookie里面，B系统网关拦截后，重定向到SSO服务器，服务器获取Cookie是否存在并验证，成功后返回给B系统。</p>
+<h2 id="不同域的CAS方式"><a href="#不同域的CAS方式" class="headerlink" title="不同域的CAS方式"></a>不同域的CAS方式</h2><blockquote>
+<p>Spring Security有与<a target="_blank" rel="noopener" href="https://github.com/apereo/cas">CAS</a>集成的便捷写法, 研发者只需要配置地址, 不需要关心如何统一认证.</p>
+</blockquote>
+<p>CAS （Central Authentication Service）中央认证服务</p>
+<ol>
+<li><p>A系统登录并重定向SSO 首先，用户想要访问系统A <a href="http://www.java3y.com受限的资源(比如说购物车功能，购物车功能需要登录后才能访问)，系统Awww.java3y.com发现用户并没有登录，于是重定向到sso认证中心，并将自己的地址作为参数。请求的地址如下：">www.java3y.com受限的资源(比如说购物车功能，购物车功能需要登录后才能访问)，系统Awww.java3y.com发现用户并没有登录，于是重定向到sso认证中心，并将自己的地址作为参数。请求的地址如下：</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.sso.com/?service=www.java3y.com">http://www.sso.com?service=www.java3y.com</a></p>
+</li>
+<li><p>SSO进行认证并设置SSO域的Token，并重定向给A系统 sso认证中心发现用户未登录，将用户引导至登录页面，用户进行输入用户名和密码进行登录，用户与认证中心建立全局会话（生成一份Token，写到Cookie中，保存在浏览器上）</p>
+<p>随后，认证中心重定向回系统A，并把Token携带过去给系统A，重定向的地址如下：</p>
+<p><a target="_blank" rel="noopener" href="http://www.java3y.com/?token=xxxxxxx">http://www.java3y.com?token=xxxxxxx</a></p>
+</li>
+<li><p>A系统携带Token去SSO验证，并确认登录 接着，系统A去sso认证中心验证这个Token是否正确，如果正确，则系统A和用户建立局部会话（创建Session）。到此，系统A和用户已经是登录状态了。</p>
+</li>
+<li><p>用户登录B系统，重定向到SSO，SSO检测Cookie里是否存在Token并验证 此时，用户想要访问系统B<a target="_blank" rel="noopener" href="http://www.java4y.com受限的资源(比如说订单功能,订单功能需要登录后才能访问),系统b/">www.java4y.com受限的资源(比如说订单功能，订单功能需要登录后才能访问)，系统B</a> <a href="http://www.java4y.com发现用户并没有登录，于是重定向到sso认证中心，并将自己的地址作为参数。请求的地址如下：">www.java4y.com发现用户并没有登录，于是重定向到sso认证中心，并将自己的地址作为参数。请求的地址如下：</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.sso.com/?service=www.java4y.com">http://www.sso.com?service=www.java4y.com</a></p>
+</li>
+<li><p>SSO发现用户已登录，将Token重定向B系统 注意，因为之前用户与认证中心<a target="_blank" rel="noopener" href="http://www.sso.com已经建立了全局会话(当时已经把cookie保存到浏览器上了),所以这次系统b重定向到认证中心www.sso.com是可以带上cookie的./">www.sso.com已经建立了全局会话（当时已经把Cookie保存到浏览器上了），所以这次系统B重定向到认证中心www.sso.com是可以带上Cookie的。</a> 认证中心根据带过来的Cookie发现已经与用户建立了全局会话了，认证中心重定向回系统B，并把Token携带过去给系统B，重定向的地址如下：</p>
+<p><a target="_blank" rel="noopener" href="http://www.java4y.com/?token=xxxxxxx">http://www.java4y.com?token=xxxxxxx</a></p>
+</li>
+<li><p>B系统携带Token去SSO验证，并确认登录 接着，系统B去sso认证中心验证这个Token是否正确，如果正确，则系统B和用户建立局部会话（创建Session）。到此，系统B和用户已经是登录状态了。</p>
+</li>
+</ol>
+<h3 id="票据模式"><a href="#票据模式" class="headerlink" title="票据模式"></a>票据模式</h3><p>在CAS标准中，用户登录认证的操作如下。</p>
+<ol>
+<li>用户访问A系统，重定向SSO，并携带当前系统地址。</li>
+<li>SSO进行登录，并生成 key &#x3D; CASTGC, value &#x3D; ${TGC}的Cookie，以及key &#x3D; ${TGC}, value &#x3D; ${TGT}的Session。</li>
+<li>SSO分发ST给A系统，A系统携带ST去SSO验证，验证通过，A系统正常登录。</li>
+<li>用户访问B系统，重定向SSO</li>
+<li>SSO发现Cookie中有CASTGC的Cookie，获取到TGC的值去Session查找TGT是否存在，找到的话就说明登录过了。</li>
+<li>SSO分发ST给B系统，B系统携带ST去SSO验证，验证通过，B系统正常登录。</li>
+</ol>
+<h3 id="一次注销，全端下线"><a href="#一次注销，全端下线" class="headerlink" title="一次注销，全端下线"></a>一次注销，全端下线</h3><p>SSO在被重定向过来时，将业务系统的项目地址存入到用户相关的Set集合里。</p>
+<p>当某个系统点击注销按钮，将该请求发送至SSO中，让SSO遍历Set集合对地址后追加注销字符串，进行逐一下线操作，然后再注销SSO。</p>
+<h3 id="本地服务"><a href="#本地服务" class="headerlink" title="本地服务"></a>本地服务</h3><h4 id="认证"><a href="#认证" class="headerlink" title="认证"></a>认证</h4><ol>
+<li>用户访问&#x2F;business&#x2F;index , 因为没登录, 被配置的<code>authenticationEntryPoint</code>发送SSO登录请求重定向至&#x2F;sso&#x2F;code?redirectUrl</li>
+<li>SSO服务的默认未认证拦截器拦截到该请求, 重定向至SSO登录页面.</li>
+<li>用户登录成功后, 交由研发人员实现SSO服务中的successHandler类进行处理, <code>authenticationDetailsSource.buildDetails(request)</code>设置details信息到Authentication里面, 记录日志等, 并根据savedRequest重定向到业务的index 或者 SSO的index</li>
+<li>再次访问&#x2F;business&#x2F;index , 还是因为没登录, 被配置的<code>authenticationEntryPoint</code>发送SSO登录请求重定向至&#x2F;sso&#x2F;code?redirectUrl</li>
+<li>这一次SSO通过已经存在的session发现认证了, 不再拦截, 进入code方法, 查询具体的客户端信息, 根据session中的用户信息与查询的客户端信息存入map, key&#x3D;code, value&#x3D;authentication, 再根据redirectUrl返回重定向至业务的post登录请求(&#x2F;ssoLogin)</li>
+<li>这一次请求地址是&#x2F;ssoLogin, 该地址是子类构造器中定义的, 所以被<code>AbstractAuthenticationProcessingFilter</code>过滤器匹配到. 根据code参数, new一个Authentication, 并authenticationDetailsSource.buildDetails(request)设置details信息到Authentication里面, 并创建一个当前session并传入. 检查code参数是否存在, 不存在就重新去获取code, 存在就进入自定义认证逻辑<code>SsoAuthenticationProvider</code></li>
+<li>该认证方法中进行远程调用&#x2F;sso&#x2F;verify方法, 通过code参数从map中删除该key并获取authentication对象, 然后返回user信息对象, 里面包含SSO的sessionid, 将他也放入authentication对象里面, 然后返回authentication <strong>在这一步中, 如果项目之间允许共享Redis, 则不需要将用户信息通过http的方式同步</strong></li>
+<li>进入业务的登录成功successHandler类进行处理,将SSO的sessionid与当前业务的sessionid绑定放入域中, 获取savedRequest并重定向</li>
+</ol>
+<h4 id="登出"><a href="#登出" class="headerlink" title="登出"></a>登出</h4><ol>
+<li>用户调用当前业务的登出方法, 该方法重定向到SSO登出方法</li>
+<li>SSO登出方法根据配置好的所有业务模块信息, 循环获取所有的登出地址, 传入SSO的sessionId并进行调用</li>
+<li>每一个业务登出方法处理都需要根据SSO的sessionid找到当前业务的sessionId, 然后注销.</li>
+</ol>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Distributed-System/">Distributed System</a>
+                    
+                  </div>
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/28/Distributed%20System/Oauth2/">
+                        <span class="hidden-mobile">Oauth2</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

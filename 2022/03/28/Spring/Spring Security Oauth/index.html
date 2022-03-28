@@ -24,7 +24,7 @@
 <meta property="og:description" content="Spring Security 是一个强大的可高度定制的认证和授权框架，对于Spring应用来说它是一套Web安全标准。SpringSecurity注重于为Java应用提供认证和授权功能，像所有的Spring项目一样，它对自定义需求具有强大的扩展性。 如果要做一个认证登录模块, 那么我们就无法绕过JWT的概念. JWT 是将用户登录信息存储在了用户电脑中, 而不再是服务器里. 如果项目中用户量庞大">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-03-28T01:43:12.000Z">
-<meta property="article:modified_time" content="2022-03-28T03:51:07.901Z">
+<meta property="article:modified_time" content="2022-03-28T03:55:34.998Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -244,7 +244,7 @@
 <ul>
 <li><strong>Authorization Code</strong><a href="/2022/03/28/Distributed%20System/Oauth2/#授权码">授权码</a>：正宗的OAuth2的授权模式，客户端先将用户导向认证服务器，登录后获取授权码，然后进行授权，最后根据授权码获取访问令牌；</li>
 <li>Implicit (隐式授权模式) ：适用于无应用服务器的项目，和授权码模式相比，取消了获取授权码的过程，直接获取访问令牌；</li>
-<li>**Resource Owner Password Credentials **<a target="_blank" rel="noopener" href="https://www.wolai.com/cZMCcwCV8qUCcAxBbfFMpu">密码式</a>：客户端直接向用户获取用户名和密码，之后向认证服务器获取访问令牌；</li>
+<li>**Resource Owner Password Credentials<a href="/2022/03/28/Distributed%20System/Oauth2/#密码式">密码式</a>：客户端直接向用户获取用户名和密码，之后向认证服务器获取访问令牌；</li>
 <li>Client Credentials (客户端模式) ：客户端直接通过客户端认证 (比如client_id和client_secret) 从认证服务器获取访问令牌。</li>
 </ul>
 <h2 id="授权服务配置适配器"><a href="#授权服务配置适配器" class="headerlink" title="授权服务配置适配器"></a><strong>授权服务配置适配器</strong></h2><h3 id="AuthorizationServerConfigurerAdapter"><a href="#AuthorizationServerConfigurerAdapter" class="headerlink" title="AuthorizationServerConfigurerAdapter"></a>AuthorizationServerConfigurerAdapter</h3><hr>
@@ -294,7 +294,7 @@
 <h3 id="正常访问-1"><a href="#正常访问-1" class="headerlink" title="正常访问"></a>正常访问</h3><p>与密码式相同</p>
 <h3 id="Token失效"><a href="#Token失效" class="headerlink" title="Token失效"></a>Token失效</h3><p>与密码式相同</p>
 <hr>
-<h2 id="SSO"><a href="#SSO" class="headerlink" title="SSO"></a>SSO</h2><p><a target="_blank" rel="noopener" href="https://www.wolai.com/38CLrTyqcMwKFhK73pSDH">SSO单点登录</a></p>
+<h2 id="SSO"><a href="#SSO" class="headerlink" title="SSO"></a>SSO</h2><p><a href="/2022/03/28/Distributed%20System/SSO%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">SSO单点登录</a></p>
 <p>以Pig项目为例，Auth服务配置了「Spring Security」「Spring Security Oauth2密码模式」「Spring Security Oauth2授权码模式」三种认证方式。</p>
 <p>简单的Spring Security配置是为了在SSO单点登录时与Session结合，让Oauth2授权码模式能够记住登录状态。</p>
 <p>Spring Security Oauth2密码模式是为了给项目内微服务认证使用。</p>
