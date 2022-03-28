@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="这是一篇自己日常研发过程中常用的命令，包含docker run参数与offline打包">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker实战">
+<meta property="og:url" content="http://example.com/2022/03/28/Container/Docker%E5%AE%9E%E6%88%98/index.html">
+<meta property="og:site_name" content="Loveaeen">
+<meta property="og:description" content="这是一篇自己日常研发过程中常用的命令，包含docker run参数与offline打包">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-28T08:20:12.000Z">
+<meta property="article:modified_time" content="2022-03-28T08:29:49.437Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Docker">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>Docker实战 - Loveaeen</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Loveaeen</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Docker实战">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-28 16:20" pubdate>
+        2022年3月28日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      50 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Docker实战</h1>
+            
+            <div class="markdown-body">
+              <h2 id="Nacos-amp-Seata"><a href="#Nacos-amp-Seata" class="headerlink" title="Nacos &amp; Seata"></a>Nacos &amp; Seata</h2><figure class="highlight bash"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><pre><code class="hljs Bash">docker run --name nacos-quick -v /Users/hanzhiguo/docker/nacos/logs:/home/nacos/logs -v /Users/hanzhiguo/docker/nacos/conf:/home/nacos/conf -e MODE=standalone -p 8848:8848 --privileged=<span class="hljs-literal">true</span> --restart=always -d nacos/nacos-server:2.0.0<br><br>docker run --name seata-server \<br>        -v /Users/hanzhiguo/docker/seata/logs:/seata-server/logs -v /Users/hanzhiguo/docker/seata/conf:/seata-server/resources \<br>        -p 8091:8091 \<br>        -e SEATA_IP=172.16.237.63 \<br>        -d seataio/seata-server:1.4.2<br></code></pre></td></tr></table></figure>
+
+<h2 id="ElasticSearch-amp-Kibana"><a href="#ElasticSearch-amp-Kibana" class="headerlink" title="ElasticSearch &amp; Kibana"></a>ElasticSearch &amp; Kibana</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs Bash"><span class="hljs-comment"># 创建自定义的网络(用于连接到连接到同一网络的其他服务(例如Kibana))</span><br>docker network create somenetwork <br><br><span class="hljs-comment"># es 暴露的端口很多</span><br><span class="hljs-comment"># es 运行占用的内存超级大</span><br><span class="hljs-comment"># es 的数据一般需要放置到安全目录！挂载</span><br><span class="hljs-comment"># 启动 elasticsearch</span><br>docker run -d --name elasticsearch --net somenetwork -p 9200:9200 -p 9300:9300 -e <span class="hljs-string">&quot;discovery.type=single-node&quot;</span> elasticsearch<br><br><span class="hljs-comment"># 查看docker状态</span><br>docker stats<br><br><span class="hljs-comment"># 限制ES内存 修改配置文件 -e 环境配置修改</span><br>docker run -d --name elasticsearch --net somenetwork -p 9200:9200 -p 9300:9300 -v /Users/hanzhiguo/docker/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml  -e <span class="hljs-string">&quot;discovery.type=single-node&quot;</span> -e ES\_JAVA\_OPTS=<span class="hljs-string">&quot;-Xms64M -Xmx512M&quot;</span> elasticsearch:6.4.3<br><br><span class="hljs-comment"># 运行 Kibana</span><br>docker run -d --name kibana --net somenetwork -p 5601:5601 kibana<br></code></pre></td></tr></table></figure>
+
+<h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs Bash">docker run \<br>-p 6379:6379 \<br>-v /Users/hanzhiguo/docker/redis/data:/data \<br>-v /Users/hanzhiguo/docker/redis/conf/redis.conf:/etc/redis/redis.conf \<br>--privileged=<span class="hljs-literal">true</span> \<br>--name myredis \<br>-d redis:5.0.9-alpine3.11 redis-server /etc/redis/redis.conf<br></code></pre></td></tr></table></figure>
+
+<h2 id="loveaeen-x2F-Centos7"><a href="#loveaeen-x2F-Centos7" class="headerlink" title="loveaeen&#x2F;Centos7"></a>loveaeen&#x2F;Centos7</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs Bash"><span class="hljs-comment"># docker run</span><br>docker run -itd --privileged --hostname=master --name centos7-master loveaeen/centos-docker:1.0 /usr/sbin/init<br><br>docker run -itd --privileged --hostname=minio1 --name centos7-minio1 loveaeen/centos-docker:1.0 /usr/sbin/init<br><br>docker run -itd --privileged --hostname=minio2 --name centos7-minio2 loveaeen/centos-docker:1.0 /usr/sbin/init<br><br>docker run -itd --privileged --hostname=minio3 --name centos7-minio3 loveaeen/centos-docker:1.0 /usr/sbin/init<br><br><span class="hljs-comment"># modify hostname</span><br><span class="hljs-comment"># hostnamectl set-hostname master</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="Ubuntu-amp-Tomcat8-amp-JDK8"><a href="#Ubuntu-amp-Tomcat8-amp-JDK8" class="headerlink" title="Ubuntu &amp; Tomcat8 &amp; JDK8"></a>Ubuntu &amp; Tomcat8 &amp; JDK8</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs Bash"><span class="hljs-comment"># 创建dockerfile文件</span><br>FROM         ubuntu:14.10<br>MAINTAINER    linx<br><br><span class="hljs-comment"># 把java与tomcat添加到容器中</span><br>ADD jdk-8u261-linux-x64.tar.gz /usr/local/<br>ADD apache-tomcat-8.5.57.tar.gz /usr/local/<br><br><span class="hljs-comment"># 配置java与tomcat环境变量</span><br>ENV JAVA\_HOME /usr/local/jdk1.8.0\_261<br>ENV CLASSPATH <span class="hljs-variable">$JAVA</span>\_HOME/lib/dt.jar:<span class="hljs-variable">$JAVA</span>\_HOME/lib/tools.jar<br>ENV CATALINA\_HOME /usr/local/apache-tomcat-8.5.57<br>ENV CATALINA\_BASE /usr/local/apache-tomcat-8.5.57<br>ENV PATH <span class="hljs-variable">$PATH</span>:<span class="hljs-variable">$JAVA</span>\_HOME/bin:<span class="hljs-variable">$CATALINA</span>\_HOME/lib:<span class="hljs-variable">$CATALINA</span>\_HOME/bin<br><br><span class="hljs-comment"># 容器运行时监听的端口</span><br>EXPOSE  8080<br><br><span class="hljs-comment"># 使用dockerfile</span><br>docker build -t name .<br><br><span class="hljs-comment"># tomcat启动并挂载</span><br>docker run -i -t -p 8084:8080 -v /Users/hanzhiguo/docker/tomcat:/usr/local/apache-tomcat-8.5.57/webapps --name shys\_tomcat shys\_tomcat<br></code></pre></td></tr></table></figure>
+
+<h2 id="Mysql"><a href="#Mysql" class="headerlink" title="Mysql"></a>Mysql</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs Bash">docker run --name mysql -p 3306:3306 -e MYSQL\_ROOT\_PASSWORD=root -d  mysql --lower\_case\_table\_names=1<br><br><span class="hljs-comment"># 若mysql版本为8以上。有些工具无法连接 需要修改用户密码的验证方式</span><br>ALTER USER <span class="hljs-string">&#x27;root&#x27;</span>@<span class="hljs-string">&#x27;localhost&#x27;</span> IDENTIFIED WITH mysql\_native\_password BY <span class="hljs-string">&#x27;yourpassword&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="Prometheus-amp-Grafana监控Springboot-amp-Mysql"><a href="#Prometheus-amp-Grafana监控Springboot-amp-Mysql" class="headerlink" title="Prometheus &amp; Grafana监控Springboot &amp; Mysql"></a>Prometheus &amp; Grafana监控Springboot &amp; Mysql</h2><h3 id="1-需要在springboot项目中加入依赖"><a href="#1-需要在springboot项目中加入依赖" class="headerlink" title="1. 需要在springboot项目中加入依赖"></a>1. 需要在springboot项目中加入依赖</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs Bash">&amp;lt;!-- 为prometheus暴露采集端点 --&amp;gt;<br>        &amp;lt;dependency&amp;gt;<br>            &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;<br>            &amp;lt;artifactId&amp;gt;spring-boot-starter-actuator&amp;lt;/artifactId&amp;gt;<br>        &amp;lt;/dependency&amp;gt;<br><br>        &amp;lt;!-- prometheus支持 --&amp;gt;<br>        &amp;lt;dependency&amp;gt;<br>            &amp;lt;groupId&amp;gt;io.micrometer&amp;lt;/groupId&amp;gt;<br>            &amp;lt;artifactId&amp;gt;micrometer-registry-prometheus&amp;lt;/artifactId&amp;gt;<br>        &amp;lt;/dependency&amp;gt;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-yml文件中开放地址"><a href="#2-yml文件中开放地址" class="headerlink" title="2. yml文件中开放地址"></a>2. yml文件中开放地址</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs YAML"><span class="hljs-attr">management:</span><br>  <span class="hljs-attr">endpoints:</span><br>  <span class="hljs-attr">web:</span><br>    <span class="hljs-attr">exposure:</span><br>      <span class="hljs-attr">include:</span> <span class="hljs-string">&quot;*&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-创建一个prometheus-yml文件"><a href="#3-创建一个prometheus-yml文件" class="headerlink" title="3.创建一个prometheus.yml文件"></a>3.创建一个prometheus.yml文件</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs YAML"><span class="hljs-comment"># 全局配置</span><br><span class="hljs-attr">lobal:</span><br> <span class="hljs-attr">scrape_interval:</span>     <span class="hljs-string">15s</span> <span class="hljs-comment"># 多久 收集 一次数据</span><br> <span class="hljs-attr">evaluation_interval:</span> <span class="hljs-string">15s</span> <span class="hljs-comment"># 多久评估一次 规则</span><br> <span class="hljs-attr">scrape_timeout:</span>      <span class="hljs-string">10s</span>   <span class="hljs-comment"># 每次 收集数据的 超时时间</span><br><br> <span class="hljs-string">监控预警配置.未启用</span><br><span class="hljs-attr">lerting:</span><br> <span class="hljs-attr">alertmanagers:</span><br> <span class="hljs-bullet">-</span> <span class="hljs-attr">static_configs:</span><br>   <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span><br>     <span class="hljs-comment"># - alertmanager:9093</span><br><br> <span class="hljs-comment"># 规则文件, 可以使用通配符. 未启用</span><br><span class="hljs-attr">ule_files:</span><br> <span class="hljs-comment"># - &quot;first_rules.yml&quot;</span><br> <span class="hljs-comment"># - &quot;second_rules.yml&quot;</span><br><br> <span class="hljs-string">prometheus服务配置</span><br><span class="hljs-attr">crape_configs:</span><br> <span class="hljs-bullet">-</span> <span class="hljs-attr">job_name:</span> <span class="hljs-string">&#x27;prometheus&#x27;</span><br>   <span class="hljs-attr">static_configs:</span><br>   <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span> [<span class="hljs-string">&#x27;localhost:9090&#x27;</span>]<br><br> <span class="hljs-string">SpringBoot应用配置</span><br> <span class="hljs-bullet">-</span> <span class="hljs-attr">job_name:</span> <span class="hljs-string">&#x27;SpringBootPrometheus&#x27;</span><br>   <span class="hljs-attr">scrape_interval:</span> <span class="hljs-string">5s</span><br>   <span class="hljs-attr">metrics_path:</span> <span class="hljs-string">&#x27;/actuator/prometheus&#x27;</span><br>   <span class="hljs-attr">static_configs:</span><br>     <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span> [<span class="hljs-string">&#x27;192.168.1.145:81&#x27;</span>]<br><br> <span class="hljs-string">mysql配置</span><br> <span class="hljs-bullet">-</span> <span class="hljs-attr">job_name:</span> <span class="hljs-string">&#x27;mysql&#x27;</span><br>   <span class="hljs-attr">static_configs:</span><br>     <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span> [<span class="hljs-string">&#x27;192.168.1.145:9104&#x27;</span>]<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-docker启动prometheus-通过配置文件挂载-及grafana"><a href="#4-docker启动prometheus-通过配置文件挂载-及grafana" class="headerlink" title="4.docker启动prometheus(通过配置文件挂载)及grafana"></a>4.docker启动prometheus(通过配置文件挂载)及grafana</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs Bash"><span class="hljs-comment"># 需要先创建一个配置文件。用于挂载</span><br>docker run  -d \<br>  -p 9090:9090 \<br>  --name prometheus \<br>  -v /Users/hanzhiguo/docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml  \<br>  prom/prometheus<br><br><span class="hljs-comment"># 启动Grafana</span><br>docker run -d \<br>  -p 3000:3000 \<br>  --name=grafana \<br>  -v /Users/hanzhiguo/docker/grafana-storage:/var/lib/grafana \<br>  grafana/grafana<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-安装mysql-exporter监控mysql"><a href="#5-安装mysql-exporter监控mysql" class="headerlink" title="5.安装mysql-exporter监控mysql"></a>5.安装mysql-exporter监控mysql</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs Bash"><span class="hljs-comment"># 创建一个监控账户</span><br>CREATE USER <span class="hljs-string">&#x27;exporter&#x27;</span>@<span class="hljs-string">&#x27;localhost&#x27;</span> IDENTIFIED BY <span class="hljs-string">&#x27;XXXXXXXX&#x27;</span> WITH MAX\_USER\_CONNECTIONS 10;<br>GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO <span class="hljs-string">&#x27;exporter&#x27;</span>@<span class="hljs-string">&#x27;localhost&#x27;</span>;<br><span class="hljs-comment"># 启动mysql-exporter</span><br>docker run -d \<br>  -p 9104:9104 \<br>  -e DATA\_SOURCE\_NAME=<span class="hljs-string">&quot;exporter:exporter@(192.168.1.145:3306)/&quot;</span> \<br>  prom/mysqld-exporter<br><br><span class="hljs-comment"># 结束后使用mrbird的mysql监控json</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="BackUp-amp-Transfer"><a href="#BackUp-amp-Transfer" class="headerlink" title="BackUp &amp; Transfer"></a>BackUp &amp; Transfer</h2><h3 id="BackUp"><a href="#BackUp" class="headerlink" title="BackUp"></a>BackUp</h3><ul>
+<li>运行一个 Ubuntu 的容器，挂载mongo容器的所有 volume，映射宿主机的 backup 目录到容器里面的 &#x2F;backup 目录，然后运行 tar 命令将data目录下的所有文件打包到backup.tar中 <code>docker run --rm --volumes-from mongo -v d:/backup:/backup ubuntu tar cvf /backup/backup.tar /data/</code></li>
+<li>这样宿主机的backup目录就有了mongo容器的备份压缩包了</li>
+</ul>
+<h3 id="Transfer"><a href="#Transfer" class="headerlink" title="Transfer"></a>Transfer</h3><ul>
+<li>运行一个 ubuntu 容器，挂载 mongo 容器的所有 volumes，然后读取 &#x2F;backup 目录中的备份文件，解压到 &#x2F;data&#x2F; 目录 <code>docker run --rm --volumes-from mongo -v d:/backup:/backup ubuntu bash -c &quot;cd /data/ &amp;&amp; tar xvf /backup/backup.tar --strip 1&quot;</code></li>
+<li>strip 1 表示解压时去掉前面1层目录，因为压缩时包含了绝对路径</li>
+</ul>
+<h2 id="Push-amp-Pull"><a href="#Push-amp-Pull" class="headerlink" title="Push &amp; Pull"></a>Push &amp; Pull</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs Bash"><span class="hljs-comment"># docker login your account</span><br><span class="hljs-comment"># input your loginname &amp; password</span><br>docker login<br><br><span class="hljs-comment"># tag the image</span><br>docker tag image:1.0 loveaee/image:1.0<br><br><span class="hljs-comment"># push your images to Docker Hub</span><br>docker push loveaee/image:1.0<br><br><span class="hljs-comment"># delete local image</span><br>docker rmi imageId<br><br><span class="hljs-comment"># pull image from docker hub</span><br>docker pull loveaee/image:1.0<br></code></pre></td></tr></table></figure>
+
+<h2 id="Offline"><a href="#Offline" class="headerlink" title="Offline"></a>Offline</h2><p>在内网模式下，我们可以让Docker接入内网仓库harbor来管理所有的镜像文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs Bash">vim /etc/docker/daemon.json<br><br><span class="hljs-string">&quot;insecure-registries&quot;</span>: [<span class="hljs-string">&quot;172.17.0.3&quot;</span>]<br><br>systemctl restart docker<br></code></pre></td></tr></table></figure>
+
+<p>也可以使用ftp的方式来使用离线版镜像。</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver"><span class="hljs-comment"># save image to disk</span><br><span class="hljs-comment"># -o : Write to a file</span><br>docker save image -o image.tar<br><br><span class="hljs-comment"># load image from disk</span><br><span class="hljs-comment"># -i : Read from tar archive file</span><br>docker <span class="hljs-built_in">load</span> -i image.tar<br></code></pre></td></tr></table></figure>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Container/">Container</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Docker/">Docker</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/28/Container/Docker%20Compose/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Docker Compose</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/28/Distributed%20System/Seata/">
+                        <span class="hidden-mobile">Seata</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

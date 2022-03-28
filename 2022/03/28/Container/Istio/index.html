@@ -1,0 +1,473 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="我们可以使用Istio流量管理API对服务网格中的流量进行精细控制。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Istio">
+<meta property="og:url" content="http://example.com/2022/03/28/Container/Istio/index.html">
+<meta property="og:site_name" content="Loveaeen">
+<meta property="og:description" content="我们可以使用Istio流量管理API对服务网格中的流量进行精细控制。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/image/Istio/v2-e6ba4a015d8955c05015d5a41ca9b007_1440w.jpg">
+<meta property="article:published_time" content="2022-03-28T08:45:12.000Z">
+<meta property="article:modified_time" content="2022-03-28T08:40:46.794Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Kubernetes">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/image/Istio/v2-e6ba4a015d8955c05015d5a41ca9b007_1440w.jpg">
+  
+  
+  <title>Istio - Loveaeen</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Loveaeen</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Istio">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-28 16:45" pubdate>
+        2022年3月28日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.4k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      20 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Istio</h1>
+            
+            <div class="markdown-body">
+              <h2 id="出现背景"><a href="#出现背景" class="headerlink" title="出现背景"></a>出现背景</h2><p>当「<strong>微服务架构</strong>」的趋势开始在互联网中蔓延，之所以微服务架构里，我们选择在应用层面而不是基础设施层面去解决这些分布式问题，完全是因为由硬件构成的基础设施，跟不上由软件构成的应用服务的灵活性的无奈之举。为此我们进入了「<strong>后微服务架构</strong>」的时代，Kubernetes出现了！当 Kubernetes 统一了容器编排管理系统之后，这些纯技术性的底层问题，便开始有了被广泛认可和采纳的基础设施层面的解决方案。</p>
+<p>Kubernetes 的实现版本中直接删除了配置中心、服务注册中心的工程，在其他工程的 pom.xml 中也删除了如 Eureka、Ribbon、Config 等组件的依赖。取而代之的是新增了若干以 YAML 配置文件为载体的<strong>Skaffold</strong>和 Kubernetes 的资源描述，这些资源描述文件，将会动态构建出 DNS 服务器、服务负载均衡器等一系列虚拟化的基础设施，去代替原有的应用层面的技术组件。</p>
+<p>可是，单纯的 Kubernetes 仍然不能解决我们面临的所有分布式技术问题，它难以做到精细化的服务治理，譬如熔断、流控、观测，等等。而即使是那些它可以提供支持的分布式能力，譬如通过 DNS 与服务来实现的服务发现与负载均衡，也只能说是初步解决了的分布式中如何调用服务的问题而已，只靠 DNS 难以满足根据不同的配置规则、协议层次、均衡算法等去调节负载均衡的执行过程这类高级的配置需求。</p>
+<p>Kubernetes 给予了我们强大的虚拟化基础设施，这是一把好用的锤子，但我们却不必把所有问题都看作钉子，不必只局限于纯粹基础设施的解决方案。现在，基于 Kubernetes 之上构筑的<strong>服务网格（Service Mesh）</strong>是目前最先进的架构风格，即通过中间人流量劫持的方式，以介乎于应用和基础设施之间的边车代理（Sidecar）来做到既让用户代码可以专注业务需求，不必关注分布式的技术，又能实现几乎不亚于此前 Spring Cloud 时代的那种通过代码来解决分布式问题的可配置、安全和可观测性。</p>
+<p>这一个目标，现在已成为了最热门的服务网格框架 <font color='blue'><strong>Istio</strong></font> 的 Slogan：Connect, Secure, Control, And Observe Services。</p>
+<h2 id="流量管理"><a href="#流量管理" class="headerlink" title="流量管理"></a>流量管理</h2><p>我们可以使用Istio流量管理API对服务网格中的流量进行精细控制。我们可以使用这些API将自己的流量配置添加到Istio。此外，我们可以使用Kubernetes自定义资源定义（CRD）定义API资源。帮助我们控制流量路由的关键API资源是虚拟服务和目标规则。</p>
+<p>基本上，虚拟服务使我们可以配置如何将请求路由到Istio服务网格中的服务。因此，虚拟服务由一个或多个按顺序评估的路由规则组成。评估虚拟服务的路由规则后，将应用目标规则。目标规则有助于我们控制到达目标的流量，例如，按版本对服务实例进行分组。</p>
+<p><img src="/image/Istio/v2-e6ba4a015d8955c05015d5a41ca9b007_1440w.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h2><p>Istio为每个服务提供身份。与每个Envoy代理一起运行的Istio代理与istiod一起使用以自动进行密钥和证书轮换。</p>
+<p>Istio提供两种身份验证 <strong>对等身份验证、请求身份验证</strong>。对等身份验证用于服务到服务的身份验证，其中Istio提供双向TLS作为全栈解决方案。请求身份验证用于最终用户身份验证，其中Istio使用自定义身份验证提供程序或OpenID Connect（OIDC）提供程序提供JSON Web令牌（JWT）验证。</p>
+<p>Istio还允许我们通过简单地将授权策略应用于服务来实施对服务的访问控制。授权策略对Envoy代理中的入站流量实施访问控制。这样，我们就可以在各种级别上应用访问控制：网格，命名空间和服务范围。</p>
+<h2 id="可观察性"><a href="#可观察性" class="headerlink" title="可观察性"></a>可观察性</h2><p>Istio为网格网络内的所有服务通信生成详细的遥测，例如度量，分布式跟踪和访问日志。 Istio生成一组丰富的代理级指标，面向服务的指标和控制平面指标。</p>
+<p>之前，Istio遥测体系结构将Mixer作为核心组件。但是从<strong>Telemetry v2</strong>开始，混音器提供的功能已替换为Envoy代理插件：</p>
+<p>此外，Istio通过Envoy代理生成分布式跟踪。 Istio支持许多跟踪后端，例如Zipkin，Jaeger，Lightstep和Datadog。我们还可以控制跟踪速率的采样率。此外，Istio还以一组可配置的格式生成服务流量的访问日志。</p>
+<h2 id="缺陷"><a href="#缺陷" class="headerlink" title="缺陷"></a>缺陷</h2><ol>
+<li>服务网格处理所有服务到服务的通信，而部署和操作服务网格则需要支付额外的费用。对于较简单的应用程序，这可能是不合理的。</li>
+<li>由于我们已经习惯于处理一些此类问题，例如应用程序代码中的熔断，因此可能导致服务网格中的重复处理。</li>
+<li>越来越依赖于诸如服务网格之类的外部系统可能会损害应用程序的可移植性，尤其是因为没有针对服务网格的行业标准。</li>
+<li><strong>由于服务网格通常通过拦截通过代理的网格流量来工作，因此它可能会给请求增加不希望的延迟。</strong></li>
+<li>服务网格增加了许多其他组件和配置，需要精确处理。这需要专业知识，并增加了学习曲线。</li>
+</ol>
+<h2 id="替代品"><a href="#替代品" class="headerlink" title="替代品"></a>替代品</h2><p>尽管Istio非常受欢迎，并得到了业内一些领导者的支持，但它当然不是唯一的选择。尽管我们在这里无法进行全面的比较，但让我们看一下Linkerd和Consul这两个选项。</p>
+<p><font color='blue'>Linkerd</font> 是已为Kubernetes平台创建的开源服务网格。它也很受欢迎，目前在CNCF中具有孵化项目的地位。它的工作原理类似于Istio等任何其他服务网格。它还利用TCP代理来处理网格流量。 Linkerd使用用Rust编写的微型代理，称为Linkerd代理。</p>
+<p><font color='blue'>Consul</font> 是HashiCorp的服务网格的开源实现。它的好处是可以与HashiCorp的其他基础架构管理产品套件很好地集成，以提供更广泛的功能。 Consul中的数据平面可以灵活地支持代理以及本机集成模型。它带有内置代理，但也可以与Envoy一起使用。尽管它提供了服务网格（如Istio）的所有标准功能，但它是<strong>部署和管理的更复杂的系统</strong>。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Container/">Container</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Kubernetes/">Kubernetes</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/28/Container/ETCD/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ETCD</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/28/Container/Rancher/">
+                        <span class="hidden-mobile">Rancher</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
