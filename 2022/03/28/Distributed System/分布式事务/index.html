@@ -1,0 +1,522 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="当我们项目越来越庞大之后，为了性能优化，保证数据的原子性，分布式事务必须引入进来。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式事务">
+<meta property="og:url" content="http://example.com/2022/03/28/Distributed%20System/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/index.html">
+<meta property="og:site_name" content="Loveaeen">
+<meta property="og:description" content="当我们项目越来越庞大之后，为了性能优化，保证数据的原子性，分布式事务必须引入进来。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/image/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/format,png-20220328161219693.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201118174832330.png#pic_center">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20201118174947450.png#pic_center">
+<meta property="og:image" content="http://example.com/image/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/20201119154252414.png">
+<meta property="og:image" content="http://example.com/image/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/362411093-5d882d3d41c8d_articlex.png">
+<meta property="og:image" content="http://example.com/image/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/ded2a136db5d41b781f5d1ec9e1fed83.png">
+<meta property="article:published_time" content="2022-03-28T08:10:12.000Z">
+<meta property="article:modified_time" content="2022-03-28T08:21:33.998Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/image/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/format,png-20220328161219693.png">
+  
+  
+  <title>分布式事务 - Loveaeen</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Loveaeen</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="分布式事务">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-28 16:10" pubdate>
+        2022年3月28日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      28 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">分布式事务</h1>
+            
+            <div class="markdown-body">
+              <p>若对本地事务不甚了解的读者，请在了解分布式事务之前，先阅读这篇文章<a target="_blank" rel="noopener" href="https://icyfenix.cn/architect-perspective/general-architecture/transaction/local.html">本地事务</a></p>
+<p>当我们的项目庞大以后, 为了性能的优化, 我们首先需要拆分项目模块, 使之变成分布式项目. 数据库也要进行模块切割. 在传统的单体架构下, 我们只会在一个数据库中进行事务操作, 这种事务的控制非常简单. 但在分布式架构下，一个请求调用链可能会经过多个服务，操作多个数据库。这种情况下，事务被分散到了各个子系统中，分布式架构事务（下面简称分布式事务）问题显得尤为重要，特别是在金融电商领域，如果分布式事务没控制好，损失的就是是真金白银</p>
+<p>数据库数据一致性的强度可以分为三种：</p>
+<ul>
+<li>强一致性：要求数据库中更新后的数据能立即对外可见；</li>
+<li>弱一致性：能够容忍数据库中部分更新后的数据，对外不可见；</li>
+<li>最终一致性：要求数据库中更新后的数据在一段时间后 (这个时间区间的长度主要受网络通信延迟, 系统负载等因素影响) 对外可见</li>
+</ul>
+<p><img src="/image/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/format,png-20220328161219693.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="2PC"><a href="#2PC" class="headerlink" title="2PC"></a><a target="_blank" rel="noopener" href="https://icyfenix.cn/architect-perspective/general-architecture/transaction/global.html">2PC</a></h2><p>2PC 是基于 <code>XA</code> 协议实现的分布式事务. <code>XA</code> 协议分为两个部分 : 事务管理器和本地资源管理器. 其中本地资源管理器通常由数据库实现, 比如 Oracle、Mysql. 而事务管理器则作为一个全局的调度者.</p>
+<p>2PC 对业务侵入很小, 它最大的优势就是对使用方透明, 用户可以像使用本地事务一样使用基于 <code>XA</code> 协议的分布式事务，能够严格保障事务 ACID 特性</p>
+<p>2PC 的缺点也很明显, 它是一个强一致性的同步阻塞协议，事务执⾏过程中需要将所需资源全部锁定，也就是俗称的 <code>刚性事务</code>。所以它比较适⽤于执⾏时间确定的短事务，整体性能比较差</p>
+<p><strong>大致的流程 :</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20201118174832330.png#pic_center" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>第一阶段（prepare）：事务管理器向所有本地资源管理器发起请求，询问是否是 ready 状态，所有参与者都将本事务能否成功的信息反馈发给协调者</p>
+<p><img src="https://img-blog.csdnimg.cn/20201118174947450.png#pic_center" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>第二阶段 (commit&#x2F;rollback)：事务管理器根据所有本地资源管理器的反馈，通知所有本地资源管理器，步调一致地在所有分支上提交或者回滚。</p>
+<p><strong>存在的问题 :</strong></p>
+<ul>
+<li>同步阻塞：当参与事务者存在占用公共资源的情况，其中一个占用了资源，其他事务参与者就只能阻塞等待资源释放，处于阻塞状态。</li>
+<li>单点故障：一旦事务管理器出现故障，整个系统不可用</li>
+<li>数据不一致：在阶段二，如果事务管理器只发送了部分 commit 消息，此时网络发生异常，那么只有部分参与者接收到 commit 消息，也就是说只有部分参与者提交了事务，使得系统数据不一致。</li>
+<li>不确定性：当协事务管理器发送 commit 之后，并且此时只有一个参与者收到了 commit，那么当该参与者与事务管理器同时宕机之后，重新选举的事务管理器无法确定该条消息是否提交成功。</li>
+</ul>
+<h2 id="3PC"><a href="#3PC" class="headerlink" title="3PC"></a><a target="_blank" rel="noopener" href="https://icyfenix.cn/architect-perspective/general-architecture/transaction/global.html#:~:text=%E4%B8%8D%E4%B8%80%E8%87%B4%E7%9A%84%E9%97%AE%E9%A2%98%E3%80%82-,%E4%B8%BA%E4%BA%86,-%E7%BC%93%E8%A7%A3%E4%B8%A4%E6%AE%B5%E5%BC%8F%E6%8F%90%E4%BA%A4"><strong>3PC</strong></a></h2><p>3PC 是 2PC 的一种改进版本, 为解决两阶段提交协议的<strong>阻塞问题</strong>, 上边提到两段提交, 当协调者崩溃时, 参与者不能做出最后的选择，就会一直保持阻塞锁定资源</p>
+<p>2PC 中只有协调者有超时机制，3PC 在协调者和参与者中都引入了超时机制，协调者出现故障后，参与者就不会一直阻塞。</p>
+<p>而且在第一阶段和第二阶段中又插入了一个准备阶段（如下图，看着有点啰嗦），保证了在最后提交阶段之前各参与节点的状态是一致的</p>
+<p><img src="/image/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/20201119154252414.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>虽然 3PC 用超时机制，解决了协调者故障后参与者的阻塞问题，但与此同时却多了一次网络通信，性能上反而变得更差，也不太推荐。</p>
+<h2 id="TCC"><a href="#TCC" class="headerlink" title="TCC"></a><a target="_blank" rel="noopener" href="https://icyfenix.cn/architect-perspective/general-architecture/transaction/distributed.html#tcc-%E4%BA%8B%E5%8A%A1"><strong>TCC</strong></a></h2><p>TCC 也是一种两阶段提交协议，可以看作 2PC&#x2F;XA 的一种变种，但是不会长时间持有资源锁。虽然对代码侵入很大，但是性能非常优异。</p>
+<p>关于 TCC（Try-Confirm-Cancel）的概念，最早是由 Pat Helland 于 2007 年发表的一篇名为《Life beyond Distributed Transactions:an Apostate’s Opinion》的论文提出。 TCC 事务机制相比于上面介绍的 XA，解决了其几个缺点：</p>
+<ul>
+<li>解决了协调者单点，由主业务方发起并完成这个业务活动。业务活动管理器也变成多点，引入集群。</li>
+<li>同步阻塞：引入超时，超时后进行补偿，并且不会锁定整个资源，将资源转换为业务逻辑形式，粒度变小。</li>
+<li>数据一致性，有了补偿机制之后，由业务活动管理器控制一致性</li>
+</ul>
+<p><strong>Try :</strong> 尝试执行，完成所有业务检查（一致性）, 预留必须业务资源（准隔离性），如冻结金额。</p>
+<p><strong>Confirm :</strong> 确认执行真正执行业务，不作任何业务检查，只使用 Try 阶段预留的业务资源，Confirm 操作满足幂等性。要求具备幂等设计，Confirm 失败后需要进行重试。</p>
+<p><strong>Cancel :</strong> 取消执行，释放 Try 阶段预留的业务资源 Cancel 操作满足幂等性 Cancel 阶段的异常和 Confirm 阶段异常处理方案基本上一致。</p>
+<p>在 Try 阶段，是对业务系统进行检查及资源预览，比如订单和存储操作，需要检查库存剩余数量是否够用，并进行预留，预留操作的话就是新建一个可用库存数量字段，Try 阶段操作是对这个可用库存数量进行操作。</p>
+<p>基于 TCC 实现分布式事务，会将原来只需要一个接口就可以实现的逻辑拆分为 Try、Confirm、Cancel 三个接口，所以代码实现复杂度相对较高。</p>
+<h3 id="三个问题"><a href="#三个问题" class="headerlink" title="三个问题"></a>三个问题</h3><p><strong>空回滚</strong></p>
+<ul>
+<li>Cancel 接口设计时需要允许空回滚。在 Try 接口因为丢包时没有收到，事务管理器会触发回滚，这时会触发 Cancel 接口，这时 Cancel 执行时发现没有对应的事务 xid 或主键时，需要返回回滚成功。让事务服务管理器认为已回滚，否则会不断重试，而 Cancel 又没有对应的业务数据可以进行回滚</li>
+</ul>
+<p><strong>防悬挂</strong></p>
+<ul>
+<li>悬挂的意思是：Cancel 比 Try 接口先执行，出现的原因是 Try 由于网络拥堵而超时，事务管理器生成回滚，触发 Cancel 接口，而最终又收到了 Try 接口调用，但是 Cancel 比 Try 先到。按照前面允许空回滚的逻辑，回滚会返回成功，事务管理器认为事务已回滚成功，则此时的 Try 接口不应该执行，否则会产生数据不一致，所以我们在 Cancel 空回滚返回成功之前先记录该条事务 xid 或业务主键，标识这条记录已经回滚过，Try 接口先检查这条事务xid或业务主键如果已经标记为回滚成功过，则不执行 Try 的业务操作</li>
+</ul>
+<p><strong>幂等控制</strong></p>
+<ul>
+<li>幂等性的意思是：对同一个系统，使用同样的条件，一次请求和重复的多次请求对系统资源的影响是一致的。因为网络抖动或拥堵可能会超时，事务管理器会对资源进行重试操作，所以很可能一个业务操作会被重复调用，为了不因为重复调用而多次占用资源，需要对服务设计时进行幂等控制，通常我们可以用事务 xid 或业务主键判重来控制</li>
+</ul>
+<h2 id="最终一致性"><a href="#最终一致性" class="headerlink" title="最终一致性"></a>最终一致性</h2><p>消息对列+本地事务表+定时器的方式主要是用于最终一致性的场合，牺牲强一致性，提升性能</p>
+<h3 id="消息队列事务"><a href="#消息队列事务" class="headerlink" title="消息队列事务"></a><a target="_blank" rel="noopener" href="https://icyfenix.cn/architect-perspective/general-architecture/transaction/distributed.html#%E5%8F%AF%E9%9D%A0%E4%BA%8B%E4%BB%B6%E9%98%9F%E5%88%97">消息队列事务</a></h3><ul>
+<li>基于消息中间件的 2PC 方案，通常用在高并发场景下使用，牺牲数据的强一致性换取性能的大幅提升，不过实现这种方式的成本和复杂度是比较高的，还要看实际业务情况</li>
+<li>消息队列的方案无法非常优秀的解决下游事务失败后, 让上游进行数据回滚. 因为两者是完全解耦的, 复杂度太高. 推荐的做法是记录异常信息并进行人工处理</li>
+</ul>
+<p><img src="/image/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/362411093-5d882d3d41c8d_articlex.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="本地消息表"><a href="#本地消息表" class="headerlink" title="本地消息表"></a><del>本地消息表</del></h3><p><font color='red'>如果你的消息队列不支持事务消息的情况下, 并且担心 Mq 会丢失消息的话. 可以使用该方案, 但是会额外占据数据库负载</font></p>
+<ol>
+<li>系统收到用户下单请求，将订单业务数据写入订单表中，同时把该订单对应的消息数据写入本地消息表中，订单表与本地消息表为同一个数据库，更新订单和存储消息为同一个本地事务，数据库事务处理，要么都成功，要么都失败。</li>
+<li>订单服务发送消息到消息队列，库存服务收到消息，进行库存业务操作，更新库存数据</li>
+<li>返回业务处理结果，订单服务收到结果后，将本地消息表中的数据设置完成状态或者删除数据。</li>
+<li>另起定时任务，定时扫描本地消息表，看是否有未完成的任务，有则重试。</li>
+</ol>
+<p><img src="/image/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/ded2a136db5d41b781f5d1ec9e1fed83.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="最大努力通知"><a href="#最大努力通知" class="headerlink" title="最大努力通知"></a><strong>最大努力通知</strong></h3><p><font color='gray'>第三方使用支付宝付款，支付宝成功后发送结果回调给第三方，这个结果就需要最大努力通知的机制来处理。</font></p>
+<p>最大努力通知是最简单的一种柔性事务，适用于一些最终一致性时间敏感度低的业务，且被动方处理结果 不影响主动方的处理结果。</p>
+<p>这个方案的大致意思就是：</p>
+<ul>
+<li>系统 A 本地事务执行完之后，发送个消息到 MQ；</li>
+<li>这里会有个专门消费 MQ 的服务，这个服务会消费 MQ 并调用系统 B 的接口；</li>
+<li>要是系统 B 执行成功就 ok 了；要是系统 B 执行失败了，那么最大努力通知服务就定时尝试重新调用系统 B, 反复 N 次，最后还是不行就放弃。</li>
+</ul>
+<h2 id="扩展延伸"><a href="#扩展延伸" class="headerlink" title="扩展延伸"></a>扩展延伸</h2><p><a href="/2022/03/28/Distributed%20System/Seata/">Seata</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Distributed-System/">Distributed System</a>
+                    
+                  </div>
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/28/Distributed%20System/Seata/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Seata</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/28/Distributed%20System/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5/">
+                        <span class="hidden-mobile">负载均衡策略</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
