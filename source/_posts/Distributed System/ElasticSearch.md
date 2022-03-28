@@ -221,8 +221,14 @@ PUT events
 ## Optimization
 
 1. `/etc/elasticsearch/jvm.options` - `-Xms32g -Xmx32g -Xx:+ExitOnOutOfMemoryError` - 这里建议，不管物理内存有多大，分配给Elasticsearch的只设成32G，同时后面如果出现OOM，进程直接退出 - 为什么说要把它改成这个呢？因为我们在使用一个集群时看到，有时因为聚合操作的原因，会导致某一台机器上的JAVA进程出现OOM，但是这个JVM进程还在，并没有退出，退出的话可以通过monit捕捉到，也可以进行重启。如果没有退出，而是一直挂在那的话，就不能提供正常的服务。 此外加上这个参数的话，需要升级一下JDK版本，JDK要求1.8.0_92, 从这个版本开始支持`ExitOnOutOfMemoryError`参数
-2. `/etc/elasticsearch/elasticsearch.yml` - `bootstarp.memory_lock:true` 锁定内存，防止内存交换，若遇到错误，请[增加命令](((0CBLUtikE))) - `bootstrap.system_call_filter:false` 禁用seccomp
-3. 参数优化 - `index.refresh_interval = 15`s 数据多久可以被查询到，控制buffer存入到段文件的速度。每秒写入量越大，该值也应更大。 - `index.translog.flush_threshold_size = 2g` 当内存中的translog达到2g，tanslog会执行刷盘
+
+2. `/etc/elasticsearch/elasticsearch.yml` - `bootstarp.memory_lock:true` 锁定内存，防止内存交换。
+
+   `bootstrap.system_call_filter:false` 禁用seccomp
+
+3. 参数优化 - `index.refresh_interval = 15`s 数据多久可以被查询到，控制buffer存入到段文件的速度。每秒写入量越大，该值也应更大。
+
+    `index.translog.flush_threshold_size = 2g` 当内存中的translog达到2g，tanslog会执行刷盘
 
 ### Search
 
