@@ -1,0 +1,540 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="ZooKeeper是一个分布式的，开放源码的分布式应用程序协调服务，是Google的Chubby一个开源的实现，是Hadoop和Hbase的重要组件。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Zookeeper">
+<meta property="og:url" content="http://example.com/2022/03/28/Distributed%20System/Zookeeper/index.html">
+<meta property="og:site_name" content="Loveaeen">
+<meta property="og:description" content="ZooKeeper是一个分布式的，开放源码的分布式应用程序协调服务，是Google的Chubby一个开源的实现，是Hadoop和Hbase的重要组件。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/image/Zookeeper/52A2EAAD-2AFE-4559-BEF9-88CAD40D9FB2_2.jpeg">
+<meta property="og:image" content="http://example.com/image/Zookeeper/8F31D61E-FDF7-43E9-B7E4-3E752D3EE02C_2.jpeg">
+<meta property="og:image" content="http://example.com/image/Zookeeper/4FB6945B-83C4-4D08-AA4D-E1376A07BD8C_2.jpeg">
+<meta property="og:image" content="http://example.com/image/Zookeeper/CBEDB9AF-C2F4-4BAF-9C34-FE071D753680_2.jpeg">
+<meta property="article:published_time" content="2022-03-28T08:43:12.000Z">
+<meta property="article:modified_time" content="2022-03-28T08:58:03.841Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/image/Zookeeper/52A2EAAD-2AFE-4559-BEF9-88CAD40D9FB2_2.jpeg">
+  
+  
+  <title>Zookeeper - Loveaeen</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Loveaeen</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Zookeeper">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-28 16:43" pubdate>
+        2022年3月28日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.8k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      32 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Zookeeper</h1>
+            
+            <div class="markdown-body">
+              <h2 id="集群与节点"><a href="#集群与节点" class="headerlink" title="集群与节点"></a>集群与节点</h2><p>首先，Zookeeper 集群中有几个关键的概念：<strong>Leader</strong>、<strong>Follower</strong> 和 <strong>Observer</strong>。</p>
+<p>Zookeeper 中通常只有 Leader 节点可以写入，Follower 和 Observer 都只是负责读，但是 Follower 会参与节点的选举和过半写成功，Observer 则不会，他只是单纯的提供读取数据的功能。</p>
+<p>通常这样设置的话，是为了避免太多的从节点参与过半写的过程，导致影响性能，这样 Zookeeper 只要使用一个几台机器的小集群就可以实现高性能了，如果要横向扩展的话，只需要增加 Observer 节点即可。</p>
+<p>Zookeeper 建议集群节点个数为奇数，只要超过一半的机器能够正常提供服务，那么整个集群都是可用的状态。</p>
+<p><img src="/image/Zookeeper/52A2EAAD-2AFE-4559-BEF9-88CAD40D9FB2_2.jpeg" srcset="/img/loading.gif" lazyload alt="Image"></p>
+<h3 id="数据节点-Znode"><a href="#数据节点-Znode" class="headerlink" title="数据节点 Znode"></a>数据节点 Znode</h3><p>Zookeeper 中数据存储于内存之中，这个数据节点就叫做 Znode，他是一个树形结构，比如&#x2F;a&#x2F;b&#x2F;c 类似。</p>
+<p>而 Znode 又分为<strong>持久节点、临时节点、顺序节点</strong>三大类。</p>
+<p><strong>持久节点：</strong>是指只要被创建，除非主动移除，否则都应该一直保存在 Zookeeper 中。</p>
+<p><strong>临时节点：</strong>不同的是，他的生命周期和客户端 Session 会话一样，会话失效，那么临时节点就会被移除。</p>
+<p>还有就是临时顺序节点和持久顺序节点，除了基本的特性之外，子节点的名称还具有有序性。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ol>
+<li>命名服务 Name Service，依赖 Zookeeper 可以生成全局唯一的节点 ID，来对分布式系统中的资源进行管理。</li>
+<li>分布式协调，这是 Zookeeper 的核心使用了。利用 Wather 的监听机制，一个系统的某个节点状态发生改变，另外系统可以得到通知。</li>
+<li>集群管理，分布式集群中状态的监控和管理，使用 Zookeeper 来存储。</li>
+<li>Master 选举，利用 Zookeeper 节点的全局唯一性，同时只有一个客户端能够创建成功的特点，可以作为 Master 选举使用，创建成功的则作为 Master。</li>
+<li>分布式锁，利用 Zookeeper 创建临时顺序节点的特性。</li>
+</ol>
+<h3 id="分布式协调"><a href="#分布式协调" class="headerlink" title="分布式协调"></a>分布式协调</h3><p>这个其实是 zookeeper 很经典的一个用法，简单来说，就好比，你 A 系统发送个请求到 mq，然后 B 系统消息消费之后处理了。那 A 系统如何知道 B 系统的处理结果？用 zookeeper 就可以实现分布式系统之间的协调工作。A 系统发送请求之后可以在 zookeeper 上<strong>对某个节点的值注册个监听器</strong>，一旦 B 系统处理完了就修改 zookeeper 那个节点的值，A 系统立马就可以收到通知，完美解决。</p>
+<h2 id="监听机制和原理"><a href="#监听机制和原理" class="headerlink" title="监听机制和原理"></a>监听机制和原理</h2><p>Zookeeper 可以提供分布式数据的发布&#x2F;订阅功能，依赖的就是 Wather 监听机制。</p>
+<p><strong>客户端可以向服务端注册 Wather 监听，服务端的指定事件触发之后，就会向客户端发送一个事件通知</strong>。</p>
+<p>他有几个特性：</p>
+<ul>
+<li>一次性：一旦一个 Wather 触发之后，Zookeeper 就会将它从存储中移除</li>
+<li>客户端串行：客户端的 Wather 回调处理是串行同步的过程，不要因为一个 Wather 的逻辑阻塞整个客户端</li>
+<li>轻量：Wather 通知的单位是 WathedEvent，只包含通知状态、事件类型和节点路径，不包含具体的事件内容，具体的时间内容需要客户端主动去重新获取数据</li>
+</ul>
+<p>主要流程如下：</p>
+<ul>
+<li>客户端向服务端注册 Wather 监听；</li>
+<li>保存 Wather 对象到客户端本地的 WatherManager 中；</li>
+<li>服务端 Wather 事件触发后，客户端收到服务端通知，从 WatherManager 中取出对应 Wather 对象执行回调逻辑。</li>
+</ul>
+<p><img src="/image/Zookeeper/8F31D61E-FDF7-43E9-B7E4-3E752D3EE02C_2.jpeg" srcset="/img/loading.gif" lazyload alt="Image"></p>
+<h2 id="数据一致性"><a href="#数据一致性" class="headerlink" title="数据一致性"></a>数据一致性</h2><p>Zookeeper 通过 ZAB 原子广播协议来实现数据的最终顺序一致性，他是一个类似 2PC 两阶段提交的过程。</p>
+<p>由于 Zookeeper 只有 Leader 节点可以写入数据，如果是其他节点收到写入数据的请求，则会将之转发给 Leader 节点。</p>
+<p>主要流程如下：</p>
+<ol>
+<li>Leader 收到请求之后，将它转换为一个 proposal 提议，并且为每个提议分配一个全局唯一递增的事务 ID：zxid，然后把提议放入到一个 FIFO 的队列中，按照 FIFO 的策略发送给所有的 Follower</li>
+<li>Follower 收到提议之后，以事务日志的形式写入到本地磁盘中，写入成功后返回 ACK 给 Leader</li>
+<li>Leader 在收到超过半数的 Follower 的 ACK 之后，即可认为数据写入成功，就会发送 commit 命令给 Follower 告诉他们可以提交 proposal了</li>
+</ol>
+<p><img src="/image/Zookeeper/4FB6945B-83C4-4D08-AA4D-E1376A07BD8C_2.jpeg" srcset="/img/loading.gif" lazyload alt="Image"></p>
+<p>ZAB 包含两种基本模式，崩溃恢复和消息广播。</p>
+<p>整个集群服务在启动、网络中断或者重启等异常情况的时候，首先会进入到崩溃恢复状态，此时会通过选举产生 Leader 节点，当集群过半的节点都和 Leader 状态同步之后，ZAB 就会退出恢复模式。之后，就会进入消息广播的模式。</p>
+<h2 id="Leader-选举"><a href="#Leader-选举" class="headerlink" title="Leader 选举"></a>Leader 选举</h2><p>Leader 的选举可以分为两个方面，同时选举主要包含事务 zxid 和 myid，节点主要包含 <code>LEADING</code> <code>FOLLOWING</code> <code>LOOKING</code> 3 个状态。</p>
+<ul>
+<li>服务启动期间的选举</li>
+<li>服务运行期间的选举</li>
+</ul>
+<p><strong>服务启动期间的选举</strong></p>
+<ol>
+<li>首先，每个节点都会对自己进行投票，然后把投票信息广播给集群中的其他节点</li>
+<li>节点接收到其他节点的投票信息，然后和自己的投票进行比较，首先 zxid 较大的优先，如果 zxid 相同那么则会去选择 myid 更大者，此时大家都是 LOOKING 的状态</li>
+<li>投票完成之后，开始统计投票信息，如果集群中过半的机器都选择了某个节点机器作为 leader，那么选举结束</li>
+<li>最后，更新各个节点的状态，leader 改为 LEADING 状态，follower 改为 FOLLOWING 状态</li>
+</ol>
+<p><strong>服务运行期间的选举</strong></p>
+<p>如果开始选举出来的 leader 节点宕机了，那么运行期间就会重新进行 leader 的选举。</p>
+<ul>
+<li>leader 宕机之后，非 observer 节点都会把自己的状态修改为 LOOKING 状态，然后重新进入选举流程</li>
+<li>生成投票信息(myid,zxid)，同样，第一轮的投票大家都会把票投给自己，然后把投票信息广播出去</li>
+<li>接下来的流程和上面的选举是一样的，都会优先以 zxid，然后选择 myid，最后统计投票信息，修改节点状态，选举结束</li>
+</ul>
+<h2 id="选举后数据同步"><a href="#选举后数据同步" class="headerlink" title="选举后数据同步"></a>选举后数据同步</h2><p>那实际上 Zookeeper 在选举之后，Follower 和 Observer （统称为Learner）就会去向 Leader 注册，然后就会开始数据同步的过程。</p>
+<p>数据同步包含 3 个主要值和 4 种形式。</p>
+<p>PeerLastZxid：Learner服务器最后处理的 ZXID</p>
+<p>minCommittedLog：Leader提议缓存队列中最小 ZXID</p>
+<p>maxCommittedLog：Leader提议缓存队列中最大 ZXID</p>
+<p><strong>直接差异化同步 DIFF 同步</strong></p>
+<p>如果 PeerLastZxid 在 minCommittedLog 和 maxCommittedLog 之间，那么则说明 Learner 服务器还没有完全同步最新的数据。</p>
+<ol>
+<li>首先 Leader 向 Learner 发送 DIFF 指令，代表开始差异化同步，然后把差异数据（从 PeerLastZxid 到 maxCommittedLog 之间的数据）提议 proposal 发送给 Learner</li>
+<li>发送完成之后发送一个 NEWLEADER 命令给 Learner，同时 Learner 返回 ACK 表示已经完成了同步</li>
+<li>接着等待集群中过半的 Learner 响应了 ACK 之后，就发送一个 UPTODATE 命令，Learner 返回 ACK，同步流程结束</li>
+</ol>
+<p><img src="/image/Zookeeper/CBEDB9AF-C2F4-4BAF-9C34-FE071D753680_2.jpeg" srcset="/img/loading.gif" lazyload alt="Image"></p>
+<p><strong>先回滚再差异化同步 TRUNC+DIFF 同步</strong></p>
+<p>这个设置针对的是一个异常的场景。</p>
+<p>如果 Leader 刚生成一个 proposal，还没有来得及发送出去，此时 Leader 宕机，重新选举之后作为 Follower，但是新的 Leader 没有这个 proposal 数据。</p>
+<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><p>假设现在 Leader 是 A，minCommittedLog&#x3D;1，maxCommittedLog&#x3D;3，刚好生成的一个 proposal 的 ZXID&#x3D;4，然后挂了。</p>
+<p>重新选举出来的 Leader是B，B 之后又处理了 2 个提议，然后minCommittedLog&#x3D;1，maxCommittedLog&#x3D;5。</p>
+<p>这时候 A 的 PeerLastZxid&#x3D;4，在(1,5)之间。</p>
+<p>那么这一条只存在于 A 的提议怎么处理？</p>
+<p>A 要进行事务回滚，相当于抛弃这条数据，并且回滚到最接近于 PeerLastZxid 的事务，对于 A 来说，也就是 PeerLastZxid&#x3D;3。</p>
+<p>流程和 DIFF 一致，只是会先发送一个 TRUNC 命令，然后再执行差异化 DIFF 同步。</p>
+<p><strong>仅回滚同步 TRUNC 同步</strong></p>
+<p>针对 PeerLastZxid 大于 maxCommittedLog 的场景，流程和上述一致，事务将会被回滚到 maxCommittedLog 的记录。</p>
+<p>这个其实就更简单了，也就是你可以认为 TRUNC+DIFF 中的例子，新的Leader B 没有处理提议，所以 B 中 minCommittedLog&#x3D;1，maxCommittedLog&#x3D;3。</p>
+<p>所以 A 的 PeerLastZxid&#x3D;4 就会大于 maxCommittedLog 了，也就是 A 只需要回滚就行了，不需要执行差异化同步 DIFF 了。</p>
+<p><strong>全量同步 SNAP 同步</strong></p>
+<p>适用于两个场景：</p>
+<ul>
+<li>PeerLastZxid 小于 minCommittedLog</li>
+<li>Leader 服务器上没有提议缓存队列，并且 PeerLastZxid 不等于 Leader 的最大 ZXID</li>
+</ul>
+<p>这两种场景下，Leader 将会发送 SNAP 命令，把全量的数据都发送给 Learner 进行同步。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Distributed-System/">Distributed System</a>
+                    
+                  </div>
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/28/Distributed%20System/ElasticSearch/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ElasticSearch</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/28/Container/HELM/">
+                        <span class="hidden-mobile">HELM</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
