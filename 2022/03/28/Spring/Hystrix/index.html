@@ -1,0 +1,485 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Hystrix具备服务降级、服务熔断、线程隔离、请求缓存、请求合并及服务监控等强大功能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hystrix">
+<meta property="og:url" content="http://example.com/2022/03/28/Spring/Hystrix/index.html">
+<meta property="og:site_name" content="Loveaeen">
+<meta property="og:description" content="Hystrix具备服务降级、服务熔断、线程隔离、请求缓存、请求合并及服务监控等强大功能。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://res.craft.do/user/full/2c016c68-2ea0-5513-42ea-5813d216a654/doc/64F8465D-ECA0-4FC5-8B4D-195A84183BDB/AE24F0F6-D141-4924-8387-28C3C3D9AF70_2">
+<meta property="og:image" content="https://res.craft.do/user/full/2c016c68-2ea0-5513-42ea-5813d216a654/doc/64F8465D-ECA0-4FC5-8B4D-195A84183BDB/7ED0A8F2-1BE6-4284-B09D-A44390CCE9F6_2">
+<meta property="article:published_time" content="2022-03-28T01:43:12.000Z">
+<meta property="article:modified_time" content="2022-03-28T02:03:22.675Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://res.craft.do/user/full/2c016c68-2ea0-5513-42ea-5813d216a654/doc/64F8465D-ECA0-4FC5-8B4D-195A84183BDB/AE24F0F6-D141-4924-8387-28C3C3D9AF70_2">
+  
+  
+  <title>Hystrix - Loveaeen</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Loveaeen</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Hystrix">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-28 09:43" pubdate>
+        2022年3月28日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      36 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Hystrix</h1>
+            
+            <div class="markdown-body">
+              <blockquote>
+<p>在微服务架构中，服务与服务之间通过远程调用的方式进行通信，一旦某个被调用的服务发生了故障，其依赖服务也会发生故障，此时就会发生故障的蔓延，最终导致系统瘫痪。Hystrix实现了断路器模式，当某个服务发生故障时，通过断路器的监控，给调用方返回一个错误响应，而不是长时间的等待，这样就不会使得调用方由于长时间得不到响应而占用线程，从而防止故障的蔓延。Hystrix具备服务降级、服务熔断、线程隔离、请求缓存、请求合并及服务监控等强大功能。</p>
+</blockquote>
+<h4 id="Used-Parameters"><a href="#Used-Parameters" class="headerlink" title="Used Parameters"></a>Used Parameters</h4><ul>
+<li>fallbackMethod：指定服务降级处理方法；</li>
+<li>ignoreExceptions：忽略某些异常，不发生服务降级；</li>
+<li>commandKey：命令名称，用于区分不同的命令；</li>
+<li>groupKey：分组名称，Hystrix会根据不同的分组来统计命令的告警及仪表盘信息；</li>
+<li>threadPoolKey：线程池名称，用于划分线程池。</li>
+</ul>
+<h3 id="资源隔离"><a href="#资源隔离" class="headerlink" title="资源隔离"></a>资源隔离</h3><p><img src="https://res.craft.do/user/full/2c016c68-2ea0-5513-42ea-5813d216a654/doc/64F8465D-ECA0-4FC5-8B4D-195A84183BDB/AE24F0F6-D141-4924-8387-28C3C3D9AF70_2" srcset="/img/loading.gif" lazyload title="image"></p>
+<p><strong>适用场景</strong>：</p>
+<ul>
+<li><strong>线程池技术</strong>，适合绝大多数场景，比如说我们对依赖服务的网络请求的调用和访问、需要对调用的 timeout 进行控制（捕捉 timeout 超时异常）。</li>
+<li><strong>信号量技术</strong>，适合说你的访问不是对外部依赖的访问，而是对内部的一些比较复杂的业务逻辑的访问，并且系统内部的代码，其实不涉及任何的网络请求，那么只要做信号量的普通限流就可以了，因为不需要去捕获 timeout 类似的问题。</li>
+</ul>
+<h3 id="Request-Cache"><a href="#Request-Cache" class="headerlink" title="Request Cache"></a>Request Cache</h3><p>在一次请求上下文中，如果有多个 command，参数都是一样的，调用的接口也是一样的，而结果可以认为也是一样的。那么这个时候，我们可以让第一个 command 执行返回的结果缓存在内存中，然后这个请求上下文后续的其它对这个依赖的调用全部从内存中取出缓存结果就可以了。</p>
+<p>这样的话，好处在于不用在一次请求上下文中反复多次执行一样的 command，<strong>避免重复执行网络请求，提升整个请求的性能</strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></div></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@CacheResult(cacheKeyMethod = &quot;getCacheKey&quot;)</span><br><span class="hljs-meta">@HystrixCommand(fallbackMethod = &quot;getDefaultUser&quot;, commandKey = &quot;getUserCache&quot;)</span><br>    <span class="hljs-keyword">public</span> CommonResult <span class="hljs-title function_">getUserCache</span><span class="hljs-params">(Long id)</span> &#123;<br>    LOGGER.info(<span class="hljs-string">&quot;getUserCache id:&#123;&#125;&quot;</span>, id);<br>    <span class="hljs-keyword">return</span> restTemplate.getForObject(userServiceUrl + <span class="hljs-string">&quot;/user/&#123;1&#125;&quot;</span>, CommonResult.class, id);<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 为缓存生成key的方法</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> String <span class="hljs-title function_">getCacheKey</span><span class="hljs-params">(Long id)</span> &#123;<br>    <span class="hljs-keyword">return</span> String.valueOf(id);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="HystrixCollapser-请求合并"><a href="#HystrixCollapser-请求合并" class="headerlink" title="HystrixCollapser 请求合并"></a>HystrixCollapser 请求合并</h3><ul>
+<li>batchMethod：用于设置请求合并的方法；</li>
+<li>collapserProperties：请求合并属性，用于控制实例属性，有很多；</li>
+<li>timerDelayInMilliseconds：collapserProperties中的属性，用于控制每隔多少时间合并一次请求；</li>
+</ul>
+<ol>
+<li>在UserHystrixController中添加testCollapser方法，这里我们先进行两次服务调用，再间隔200ms以后进行第三次服务调用：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@GetMapping(&quot;/testCollapser&quot;)</span><br><span class="hljs-keyword">public</span> CommonResult <span class="hljs-title function_">testCollapser</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> ExecutionException, InterruptedException &#123;<br>  Future&lt;User&gt; future1 = userService.getUserFuture(<span class="hljs-number">1L</span>);<br>  Future&lt;User&gt; future2 = userService.getUserFuture(<span class="hljs-number">2L</span>);<br>  future1.get();<br>  future2.get();<br>  ThreadUtil.safeSleep(<span class="hljs-number">200</span>);<br>  Future&lt;User&gt; future3 = userService.getUserFuture(<span class="hljs-number">3L</span>);<br>  future3.get();<br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CommonResult</span>(<span class="hljs-string">&quot;操作成功&quot;</span>, <span class="hljs-number">200</span>);<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+<ol>
+<li>使用@HystrixCollapser实现请求合并，所有对getUserFuture的的多次调用都会转化为对getUserByIds的单次调用：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@HystrixCollapser(batchMethod = &quot;getUserByIds&quot;,collapserProperties = &#123;</span><br><span class="hljs-meta">  @HystrixProperty(name = &quot;timerDelayInMilliseconds&quot;, value = &quot;100&quot;)</span><br><span class="hljs-meta">&#125;)</span><br><span class="hljs-keyword">public</span> Future&lt;User&gt; <span class="hljs-title function_">getUserFuture</span><span class="hljs-params">(Long id)</span> &#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AsyncResult</span>&lt;User&gt;()&#123;<br>  <span class="hljs-meta">@Override</span><br>  <span class="hljs-keyword">public</span> User <span class="hljs-title function_">invoke</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-type">CommonResult</span> <span class="hljs-variable">commonResult</span> <span class="hljs-operator">=</span> restTemplate.getForObject(userServiceUrl + <span class="hljs-string">&quot;/user/&#123;1&#125;&quot;</span>, CommonResult.class, id);<br>    <span class="hljs-type">Map</span> <span class="hljs-variable">data</span> <span class="hljs-operator">=</span> (Map) commonResult.getData();<br>    <span class="hljs-type">User</span> <span class="hljs-variable">user</span> <span class="hljs-operator">=</span> BeanUtil.mapToBean(data,User.class,<span class="hljs-literal">true</span>);<br>    LOGGER.info(<span class="hljs-string">&quot;getUserById username:&#123;&#125;&quot;</span>, user.getUsername());<br>    <span class="hljs-keyword">return</span> user;<br>    &#125;<br>  &#125;;<br>&#125;<br><br><span class="hljs-meta">@HystrixCommand</span><br><span class="hljs-keyword">public</span> List&lt;User&gt; <span class="hljs-title function_">getUserByIds</span><span class="hljs-params">(List&lt;Long&gt; ids)</span> &#123;<br>  LOGGER.info(<span class="hljs-string">&quot;getUserByIds:&#123;&#125;&quot;</span>, ids);<br>  <span class="hljs-type">CommonResult</span> <span class="hljs-variable">commonResult</span> <span class="hljs-operator">=</span> restTemplate.getForObject(userServiceUrl + <span class="hljs-string">&quot;/user/getUserByIds?ids=&#123;1&#125;&quot;</span>, CommonResult.class, CollUtil.join(ids,<span class="hljs-string">&quot;,&quot;</span>));<br>  <span class="hljs-keyword">return</span> (List&lt;User&gt;) commonResult.getData();<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+<h3 id="Used-Config"><a href="#Used-Config" class="headerlink" title="Used Config"></a>Used Config</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">hystrix:</span><br>  <span class="hljs-attr">command:</span> <span class="hljs-comment">#用于控制HystrixCommand的行为</span><br>  <span class="hljs-attr">default:</span><br>    <span class="hljs-attr">execution:</span><br>    <span class="hljs-attr">isolation:</span><br>      <span class="hljs-attr">strategy:</span> <span class="hljs-string">THREAD</span> <span class="hljs-comment">#控制HystrixCommand的隔离策略，THREAD-&gt;线程池隔离策略(默认)，SEMAPHORE-&gt;信号量隔离策略</span><br>      <span class="hljs-attr">thread:</span><br>      <span class="hljs-attr">timeoutInMilliseconds:</span> <span class="hljs-number">1000</span> <span class="hljs-comment">#配置HystrixCommand执行的超时时间，执行超过该时间会进行服务降级处理</span><br>      <span class="hljs-attr">interruptOnTimeout:</span> <span class="hljs-literal">true</span> <span class="hljs-comment">#配置HystrixCommand执行超时的时候是否要中断</span><br>      <span class="hljs-attr">interruptOnCancel:</span> <span class="hljs-literal">true</span> <span class="hljs-comment">#配置HystrixCommand执行被取消的时候是否要中断</span><br>      <span class="hljs-attr">timeout:</span><br>      <span class="hljs-attr">enabled:</span> <span class="hljs-literal">true</span> <span class="hljs-comment">#配置HystrixCommand的执行是否启用超时时间</span><br>      <span class="hljs-attr">semaphore:</span><br>      <span class="hljs-attr">maxConcurrentRequests:</span> <span class="hljs-number">10</span> <span class="hljs-comment">#当使用信号量隔离策略时，用来控制并发量的大小，超过该并发量的请求会被拒绝</span><br>    <span class="hljs-attr">fallback:</span><br>    <span class="hljs-attr">enabled:</span> <span class="hljs-literal">true</span> <span class="hljs-comment">#用于控制是否启用服务降级</span><br>    <span class="hljs-attr">circuitBreaker:</span> <span class="hljs-comment">#用于控制HystrixCircuitBreaker的行为</span><br>    <span class="hljs-attr">enabled:</span> <span class="hljs-literal">true</span> <span class="hljs-comment">#用于控制断路器是否跟踪健康状况以及熔断请求</span><br>    <span class="hljs-attr">requestVolumeThreshold:</span> <span class="hljs-number">20</span> <span class="hljs-comment">#超过该请求数的请求会被拒绝</span><br>    <span class="hljs-attr">forceOpen:</span> <span class="hljs-literal">false</span> <span class="hljs-comment">#强制打开断路器，拒绝所有请求</span><br>    <span class="hljs-attr">forceClosed:</span> <span class="hljs-literal">false</span> <span class="hljs-comment">#强制关闭断路器，接收所有请求</span><br>    <span class="hljs-attr">requestCache:</span><br>    <span class="hljs-attr">enabled:</span> <span class="hljs-literal">true</span> <span class="hljs-comment">#用于控制是否开启请求缓存</span><br>  <span class="hljs-attr">collapser:</span> <span class="hljs-comment">#用于控制HystrixCollapser的执行行为</span><br>  <span class="hljs-attr">default:</span><br>    <span class="hljs-attr">maxRequestsInBatch:</span> <span class="hljs-number">100</span> <span class="hljs-comment">#控制一次合并请求合并的最大请求数</span><br>    <span class="hljs-attr">timerDelayinMilliseconds:</span> <span class="hljs-number">10</span> <span class="hljs-comment">#控制多少毫秒内的请求会被合并成一个</span><br>    <span class="hljs-attr">requestCache:</span><br>    <span class="hljs-attr">enabled:</span> <span class="hljs-literal">true</span> <span class="hljs-comment">#控制合并请求是否开启缓存</span><br>  <span class="hljs-attr">threadpool:</span> <span class="hljs-comment">#用于控制HystrixCommand执行所在线程池的行为</span><br>  <span class="hljs-attr">default:</span><br>    <span class="hljs-attr">coreSize:</span> <span class="hljs-number">10</span> <span class="hljs-comment">#线程池的核心线程数</span><br>    <span class="hljs-attr">maximumSize:</span> <span class="hljs-number">10</span> <span class="hljs-comment">#线程池的最大线程数，超过该线程数的请求会被拒绝</span><br>    <span class="hljs-attr">maxQueueSize:</span> <span class="hljs-number">-1</span> <span class="hljs-comment">#用于设置线程池的最大队列大小，-1采用SynchronousQueue，其他正数采用LinkedBlockingQueue</span><br>    <span class="hljs-attr">queueSizeRejectionThreshold:</span> <span class="hljs-number">5</span> <span class="hljs-comment">#用于设置线程池队列的拒绝阀值，由于LinkedBlockingQueue不能动态改版大小，使用时需要用该参数来控制线程数</span><br><br></code></pre></td></tr></table></figure>
+
+
+<h3 id="DashBoard"><a href="#DashBoard" class="headerlink" title="DashBoard"></a>DashBoard</h3><p>Hystrix提供了Hystrix Dashboard来实时监控HystrixCommand方法的执行情况。 Hystrix Dashboard可以有效地反映出每个Hystrix实例的运行情况，帮助我们快速发现系统中的问题，从而采取对应措施。</p>
+<p><img src="https://res.craft.do/user/full/2c016c68-2ea0-5513-42ea-5813d216a654/doc/64F8465D-ECA0-4FC5-8B4D-195A84183BDB/7ED0A8F2-1BE6-4284-B09D-A44390CCE9F6_2" srcset="/img/loading.gif" lazyload title="image"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Spring-Cloud/">Spring Cloud</a>
+                    
+                  </div>
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/28/Spring/Mycat/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Mycat</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/28/Spring/Mybatis/">
+                        <span class="hidden-mobile">Mybatis</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

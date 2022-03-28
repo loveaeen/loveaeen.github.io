@@ -1,0 +1,467 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Spring Cloud Gateway 旨在提供一种简单而有效的方式来路由到 API，并为它们提供横切关注点。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GateWay">
+<meta property="og:url" content="http://example.com/2022/03/28/Spring/GateWay/index.html">
+<meta property="og:site_name" content="Loveaeen">
+<meta property="og:description" content="Spring Cloud Gateway 旨在提供一种简单而有效的方式来路由到 API，并为它们提供横切关注点。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://www.macrozheng.com/images/springcloud_gateway_03.png">
+<meta property="article:published_time" content="2022-03-28T01:43:12.000Z">
+<meta property="article:modified_time" content="2022-03-28T02:02:51.485Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://www.macrozheng.com/images/springcloud_gateway_03.png">
+  
+  
+  <title>GateWay - Loveaeen</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Loveaeen</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="GateWay">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-28 09:43" pubdate>
+        2022年3月28日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      53 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">GateWay</h1>
+            
+            <div class="markdown-body">
+              <h3 id="过滤器"><a href="#过滤器" class="headerlink" title="过滤器"></a>过滤器</h3><h4 id="GlobalFilter"><a href="#GlobalFilter" class="headerlink" title="GlobalFilter"></a>GlobalFilter</h4><p>全局过滤器，不需要在配置文件中配置，作用在所有的路由上，最终通过GatewayFilterAdapter包装成GatewayFilterChain可识别的过滤器，它为请求业务以及路由的URI转换为真实业务服务的请求地址的核心过滤器，不需要配置，系统初始化时加载，并作用在每个路由上。</p>
+<ul>
+<li><strong>可以实现此过滤器来完成鉴权功能, 比如ruoyi-cloud项目的AuthFilter</strong>  <figure class="highlight java"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></div></td><td class="code"><pre><code class="hljs Java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 网关鉴权</span><br><span class="hljs-comment"> * </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> ruoyi</span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">@Component</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AuthFilter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">GlobalFilter</span>, Ordered<br>&#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">log</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(AuthFilter.class);<br><br>    <span class="hljs-comment">// 排除过滤的 uri 地址，nacos自行添加</span><br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> IgnoreWhiteProperties ignoreWhite;<br><br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> RedisService redisService;<br><br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title function_">filter</span><span class="hljs-params">(ServerWebExchange exchange, GatewayFilterChain chain)</span><br>    &#123;<br>        <span class="hljs-type">ServerHttpRequest</span> <span class="hljs-variable">request</span> <span class="hljs-operator">=</span> exchange.getRequest();<br>        ServerHttpRequest.<span class="hljs-type">Builder</span> <span class="hljs-variable">mutate</span> <span class="hljs-operator">=</span> request.mutate();<br><br>        <span class="hljs-type">String</span> <span class="hljs-variable">url</span> <span class="hljs-operator">=</span> request.getURI().getPath();<br>        <span class="hljs-comment">// 跳过不需要验证的路径</span><br>        <span class="hljs-keyword">if</span> (StringUtils.matches(url, ignoreWhite.getWhites()))<br>        &#123;<br>            <span class="hljs-keyword">return</span> chain.filter(exchange);<br>        &#125;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">token</span> <span class="hljs-operator">=</span> getToken(request);<br>        <span class="hljs-keyword">if</span> (StringUtils.isEmpty(token))<br>        &#123;<br>            <span class="hljs-keyword">return</span> unauthorizedResponse(exchange, <span class="hljs-string">&quot;令牌不能为空&quot;</span>);<br>        &#125;<br>        <span class="hljs-type">Claims</span> <span class="hljs-variable">claims</span> <span class="hljs-operator">=</span> JwtUtils.parseToken(token);<br>        <span class="hljs-keyword">if</span> (claims == <span class="hljs-literal">null</span>)<br>        &#123;<br>            <span class="hljs-keyword">return</span> unauthorizedResponse(exchange, <span class="hljs-string">&quot;令牌已过期或验证不正确！&quot;</span>);<br>        &#125;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">userkey</span> <span class="hljs-operator">=</span> JwtUtils.getUserKey(claims);<br>        <span class="hljs-type">boolean</span> <span class="hljs-variable">islogin</span> <span class="hljs-operator">=</span> redisService.hasKey(getTokenKey(userkey));<br>        <span class="hljs-keyword">if</span> (!islogin)<br>        &#123;<br>            <span class="hljs-keyword">return</span> unauthorizedResponse(exchange, <span class="hljs-string">&quot;登录状态已过期&quot;</span>);<br>        &#125;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">userid</span> <span class="hljs-operator">=</span> JwtUtils.getUserId(claims);<br>        <span class="hljs-type">String</span> <span class="hljs-variable">username</span> <span class="hljs-operator">=</span> JwtUtils.getUserName(claims);<br>        <span class="hljs-keyword">if</span> (StringUtils.isEmpty(userid) || StringUtils.isEmpty(username))<br>        &#123;<br>            <span class="hljs-keyword">return</span> unauthorizedResponse(exchange, <span class="hljs-string">&quot;令牌验证失败&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-comment">// 设置用户信息到请求</span><br>        addHeader(mutate, SecurityConstants.USER_KEY, userkey);<br>        addHeader(mutate, SecurityConstants.DETAILS_USER_ID, userid);<br>        addHeader(mutate, SecurityConstants.DETAILS_USERNAME, username);<br>        <span class="hljs-comment">// 内部请求来源参数清除</span><br>        removeHeader(mutate, SecurityConstants.FROM_SOURCE);<br>        <span class="hljs-keyword">return</span> chain.filter(exchange.mutate().request(mutate.build()).build());<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addHeader</span><span class="hljs-params">(ServerHttpRequest.Builder mutate, String name, Object value)</span><br>    &#123;<br>        <span class="hljs-keyword">if</span> (value == <span class="hljs-literal">null</span>)<br>        &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">valueStr</span> <span class="hljs-operator">=</span> value.toString();<br>        <span class="hljs-type">String</span> <span class="hljs-variable">valueEncode</span> <span class="hljs-operator">=</span> ServletUtils.urlEncode(valueStr);<br>        mutate.header(name, valueEncode);<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">removeHeader</span><span class="hljs-params">(ServerHttpRequest.Builder mutate, String name)</span><br>    &#123;<br>        mutate.headers(httpHeaders -&gt; httpHeaders.remove(name)).build();<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> Mono&lt;Void&gt; <span class="hljs-title function_">unauthorizedResponse</span><span class="hljs-params">(ServerWebExchange exchange, String msg)</span><br>    &#123;<br>        log.error(<span class="hljs-string">&quot;[鉴权异常处理]请求路径:&#123;&#125;&quot;</span>, exchange.getRequest().getPath());<br>        <span class="hljs-keyword">return</span> ServletUtils.webFluxResponseWriter(exchange.getResponse(), msg, HttpStatus.UNAUTHORIZED);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 获取缓存key</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> String <span class="hljs-title function_">getTokenKey</span><span class="hljs-params">(String token)</span><br>    &#123;<br>        <span class="hljs-keyword">return</span> CacheConstants.LOGIN_TOKEN_KEY + token;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 获取请求token</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> String <span class="hljs-title function_">getToken</span><span class="hljs-params">(ServerHttpRequest request)</span><br>    &#123;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">token</span> <span class="hljs-operator">=</span> request.getHeaders().getFirst(TokenConstants.AUTHENTICATION);<br>        <span class="hljs-comment">// 如果前端设置了令牌前缀，则裁剪掉前缀</span><br>        <span class="hljs-keyword">if</span> (StringUtils.isNotEmpty(token) &amp;&amp; token.startsWith(TokenConstants.PREFIX))<br>        &#123;<br>            token = token.replaceFirst(TokenConstants.PREFIX, StringUtils.EMPTY);<br>        &#125;<br>        <span class="hljs-keyword">return</span> token;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getOrder</span><span class="hljs-params">()</span><br>    &#123;<br>        <span class="hljs-keyword">return</span> -<span class="hljs-number">200</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="GatewayFilter"><a href="#GatewayFilter" class="headerlink" title="GatewayFilter"></a>GatewayFilter</h4><p>需要通过 <code>spring.cloud.routes.filters</code> 配置在<strong>具体路由</strong>下，只作用在当前路由上或通过spring.cloud.default-filters配置在全局，作用在所有路由上。</p>
+<h4 id="Hystrix-GatewayFilter"><a href="#Hystrix-GatewayFilter" class="headerlink" title="Hystrix GatewayFilter"></a>Hystrix GatewayFilter</h4><p>Hystrix 过滤器允许你将断路器功能添加到<strong>具体的网关路由</strong>中，使你的服务免受级联故障的影响，并提供服务降级处理。</p>
+<ul>
+<li><p>要开启断路器功能，我们需要在pom.xml中添加Hystrix的相关依赖：</p>
+  <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.cloud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-hystrix<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>然后添加相关服务降级的处理类：</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Created by macro on 2019/9/25.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">@RestController</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FallbackController</span> &#123;<br><br>    <span class="hljs-meta">@GetMapping(&quot;/fallback&quot;)</span><br>    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">fallback</span><span class="hljs-params">()</span> &#123;<br>        Map&lt;String,Object&gt; result = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>        result.put(<span class="hljs-string">&quot;data&quot;</span>,<span class="hljs-literal">null</span>);<br>        result.put(<span class="hljs-string">&quot;message&quot;</span>,<span class="hljs-string">&quot;Get request fallback!&quot;</span>);<br>        result.put(<span class="hljs-string">&quot;code&quot;</span>,<span class="hljs-number">500</span>);<br>        <span class="hljs-keyword">return</span> result;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>在application-filter.yml中添加相关配置，当路由出错时会转发到服务降级处理的控制器上：</p>
+  <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span><br>  <span class="hljs-attr">cloud:</span><br>    <span class="hljs-attr">gateway:</span><br>      <span class="hljs-attr">routes:</span><br>        <span class="hljs-bullet">-</span> <span class="hljs-attr">id:</span> <span class="hljs-string">hystrix_route</span><br>          <span class="hljs-attr">uri:</span> <span class="hljs-string">http://localhost:8201</span><br>          <span class="hljs-attr">predicates:</span><br>            <span class="hljs-bullet">-</span> <span class="hljs-string">Method=GET</span><br>          <span class="hljs-attr">filters:</span><br>            <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Hystrix</span><br>              <span class="hljs-attr">args:</span><br>                <span class="hljs-attr">name:</span> <span class="hljs-string">fallbackcmd</span><br>                <span class="hljs-attr">fallbackUri:</span> <span class="hljs-string">forward:/fallback</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>关闭user-service，调用该地址进行测试：<a target="_blank" rel="noopener" href="http://localhost:9201/user/1">http://localhost:9201/user/1</a> ，发现已经返回了服务降级的处理信息。</p>
+</li>
+</ul>
+<p><img src="http://www.macrozheng.com/images/springcloud_gateway_03.png" srcset="/img/loading.gif" lazyload title="image"></p>
+<h3 id="异常拦截器"><a href="#异常拦截器" class="headerlink" title="异常拦截器"></a>异常拦截器</h3><h4 id="WebExceptionHandler"><a href="#WebExceptionHandler" class="headerlink" title="WebExceptionHandler"></a>WebExceptionHandler</h4><p>在该异常处理中, 可以对 <code>服务未找到</code> 或者<code>sentinel</code>的相关异常 (BlockException) 进行判断拦截, 并返回对应错误信息, 告知用户</p>
+<p>具体可查看<strong>ruoyi</strong>项目的相关代码, 写的比较完全</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><code class="hljs Java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 网关统一异常处理</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> ruoyi</span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">@Order(-1)</span> <span class="hljs-comment">//优先级一定要小于内置ResponseStatusExceptionHandler, 经过它处理的获取对应错误类的 响应码</span><br><span class="hljs-meta">@Configuration</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">GatewayExceptionHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">ErrorWebExceptionHandler</span><br>&#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">log</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(GatewayExceptionHandler.class);<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title function_">handle</span><span class="hljs-params">(ServerWebExchange exchange, Throwable ex)</span><br>    &#123;<br>        <span class="hljs-type">ServerHttpResponse</span> <span class="hljs-variable">response</span> <span class="hljs-operator">=</span> exchange.getResponse();<br><br>        <span class="hljs-keyword">if</span> (exchange.getResponse().isCommitted())<br>        &#123;<br>            <span class="hljs-keyword">return</span> Mono.error(ex);<br>        &#125;<br><br>        String msg;<br><br>        <span class="hljs-keyword">if</span> (ex <span class="hljs-keyword">instanceof</span> NotFoundException)<br>        &#123;<br>            msg = <span class="hljs-string">&quot;服务未找到&quot;</span>;<br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (ex <span class="hljs-keyword">instanceof</span> ResponseStatusException)<br>        &#123;<br>            <span class="hljs-type">ResponseStatusException</span> <span class="hljs-variable">responseStatusException</span> <span class="hljs-operator">=</span> (ResponseStatusException) ex;<br>            msg = responseStatusException.getMessage();<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123;<br>            msg = <span class="hljs-string">&quot;内部服务器错误&quot;</span>;<br>        &#125;<br><br>        log.error(<span class="hljs-string">&quot;[网关异常处理]请求路径:&#123;&#125;,异常信息:&#123;&#125;&quot;</span>, exchange.getRequest().getPath(), ex.getMessage());<br><br>        <span class="hljs-keyword">return</span> ServletUtils.webFluxResponseWriter(response, msg);<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 自定义限流异常处理</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> ruoyi</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SentinelFallbackHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">WebExceptionHandler</span><br>&#123;<br>    <span class="hljs-keyword">private</span> Mono&lt;Void&gt; <span class="hljs-title function_">writeResponse</span><span class="hljs-params">(ServerResponse response, ServerWebExchange exchange)</span><br>    &#123;<br>        <span class="hljs-keyword">return</span> ServletUtils.webFluxResponseWriter(exchange.getResponse(), <span class="hljs-string">&quot;请求超过最大数，请稍候再试&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Mono&lt;Void&gt; <span class="hljs-title function_">handle</span><span class="hljs-params">(ServerWebExchange exchange, Throwable ex)</span><br>    &#123;<br>        <span class="hljs-keyword">if</span> (exchange.getResponse().isCommitted())<br>        &#123;<br>            <span class="hljs-keyword">return</span> Mono.error(ex);<br>        &#125;<br>        <span class="hljs-keyword">if</span> (!BlockException.isBlockException(ex))<br>        &#123;<br>            <span class="hljs-keyword">return</span> Mono.error(ex);<br>        &#125;<br>        <span class="hljs-keyword">return</span> handleBlockedRequest(exchange, ex).flatMap(response -&gt; writeResponse(response, exchange));<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> Mono&lt;ServerResponse&gt; <span class="hljs-title function_">handleBlockedRequest</span><span class="hljs-params">(ServerWebExchange exchange, Throwable throwable)</span><br>    &#123;<br>        <span class="hljs-keyword">return</span> GatewayCallbackManager.getBlockHandler().handleRequest(exchange, throwable);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Spring-Cloud/">Spring Cloud</a>
+                    
+                  </div>
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/28/Spring/Feign/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Feign</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/28/Spring/Canal/">
+                        <span class="hidden-mobile">Canal</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

@@ -16,20 +16,21 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+    <meta name="description" content="ShardingJDBC 定位为轻量级 Java 框架，在 Java 的 JDBC 层提供的额外服务。 它使用客户端直连数据库，以 jar 包形式提供服务，无需额外部署和依赖，可理解为增强版的 JDBC 驱动，完全兼容 JDBC 和各种 ORM 框架。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://example.com/2022/03/28/hello-world/index.html">
+<meta property="og:title" content="ShardingJDBC">
+<meta property="og:url" content="http://example.com/2022/03/28/Spring/ShardingJDBC/index.html">
 <meta property="og:site_name" content="Loveaeen">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="ShardingJDBC 定位为轻量级 Java 框架，在 Java 的 JDBC 层提供的额外服务。 它使用客户端直连数据库，以 jar 包形式提供服务，无需额外部署和依赖，可理解为增强版的 JDBC 驱动，完全兼容 JDBC 和各种 ORM 框架。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-03-28T01:15:48.609Z">
-<meta property="article:modified_time" content="2022-03-28T01:15:48.609Z">
+<meta property="article:published_time" content="2022-03-28T01:43:12.000Z">
+<meta property="article:modified_time" content="2022-03-28T02:13:11.567Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Database">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>Hello World - Loveaeen</title>
+  <title>ShardingJDBC - Loveaeen</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
@@ -175,7 +176,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Hello World">
+            <span class="h2" id="subtitle" title="ShardingJDBC">
               
             </span>
 
@@ -185,7 +186,7 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-03-28 09:15" pubdate>
+      <time datetime="2022-03-28 09:43" pubdate>
         2022年3月28日 上午
       </time>
     </span>
@@ -196,7 +197,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      367 字
+      1.4k 字
     </span>
   
 
@@ -205,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      4 分钟
+      12 分钟
     </span>
   
 
@@ -234,28 +235,56 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Hello World</h1>
+            <h1 style="display: none">ShardingJDBC</h1>
             
             <div class="markdown-body">
-              <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs bash">$ hexo new <span class="hljs-string">&quot;My New Post&quot;</span><br></code></pre></td></tr></table></figure>
+              <h3 id="分片算法"><a href="#分片算法" class="headerlink" title="分片算法"></a><a target="_blank" rel="noopener" href="https://shardingsphere.apache.org/document/current/cn/dev-manual/sharding/">分片算法</a></h3><ul>
+<li>精准分片 StandardShardingStrategy</li>
+<li>范围分片 RangeShardingAlgorithm</li>
+<li>行表达式分片 InlineShardingAlgorithm</li>
+<li>复合分片 ComplexShardingStrategy</li>
+<li>Hint分片 HintShardingStrategy</li>
+<li>不分片 NoneShardingStrategy</li>
+</ul>
+<h3 id="如果SQL中没有分片键，但是代码中有怎么办"><a href="#如果SQL中没有分片键，但是代码中有怎么办" class="headerlink" title="如果SQL中没有分片键，但是代码中有怎么办"></a>如果SQL中没有分片键，但是代码中有怎么办</h3><h4 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h4><p>通过解析 SQL 语句提取分片键列与值并进行分片是 Apache ShardingSphere 对 SQL 零侵入的实现方式。若 SQL 语句中没有分片条件，则无法进行分片，需要全路由。</p>
+<p>在一些应用场景中，分片条件并不存在于 SQL，而存在于外部业务逻辑。因此需要提供一种通过外部指定分片结果的方式，在 Apache ShardingSphere 中叫做 Hint。</p>
+<h4 id="机制"><a href="#机制" class="headerlink" title="机制"></a>机制</h4><p>Apache ShardingSphere 使用 <code>ThreadLocal</code> 管理分片键值。可以通过编程的方式向 <code>HintManager</code> 中添加分片条件，该分片条件仅在当前线程内生效。</p>
+<p>除了通过编程的方式使用强制分片路由，Apache ShardingSphere 还计划通过 SQL 中的特殊注释的方式引用 Hint，使开发者可以采用更加透明的方式使用该功能。</p>
+<p>指定了强制分片路由的 SQL 将会无视原有的分片逻辑，直接路由至指定的真实数据节点。</p>
+<h2 id="高可用方案"><a href="#高可用方案" class="headerlink" title="高可用方案"></a>高可用方案</h2><h2 id="主从复制原理"><a href="#主从复制原理" class="headerlink" title="主从复制原理"></a>主从复制原理</h2><h4 id="强制分片路由-Hint"><a href="#强制分片路由-Hint" class="headerlink" title="强制分片路由 Hint"></a>强制分片路由 Hint</h4><figure class="highlight java"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">HintManager</span> <span class="hljs-variable">hintManager</span> <span class="hljs-operator">=</span> HintManager.getInstance() ;<br>hintManager.setMasterRouteOnly();<br></code></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo server<br></code></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo generate<br></code></pre></td></tr></table></figure>
+<p>比如戒毒系统，更新后需要立即刷新列表。如果采用了主从复制技术的话，可能读取从库会导致暂时性的缺少数据。</p>
+<p>那么我们就可以在更新的方法中添加该代码，代码下方进行更新和查询操作，那么自然就会去读取主库数据。</p>
+<h4 id="等GTID-方案"><a href="#等GTID-方案" class="headerlink" title="等GTID 方案"></a>等GTID 方案</h4><p>MySQL 提供了一条基于 GTID 的命令，用于在从节点上执行，等待从库同步到了对应的 GTID（binlog文件中会包含 GTID），或者超时返回。</p>
+<p>select wait_for_executed_gtid_set(gtid_set, timeout);</p>
+<p>MySQL 在执行完事务后，会将该事务的 GTID 会给客户端，然后客户端可以使用该命令去要执行读操作的从库中执行，等待该 GTID，等待成功后，再执行读操作；如果等待超时，则去主库执行读操作，或者再换一个从库执行上述流程。</p>
+<p>举个例子，原来要执行读操作的 SQL 和添加了前缀的 SQL 如下所示：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> city; <span class="hljs-keyword">SET</span> <span class="hljs-variable">@maxscale</span>_secret_variable<span class="hljs-operator">=</span>(<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">CASE</span> <span class="hljs-keyword">WHEN</span> WAIT_FOR_EXECUTED_GTID_SET(<span class="hljs-string">&#x27;232-1-1&#x27;</span>, <span class="hljs-number">10</span>) <span class="hljs-operator">=</span> <span class="hljs-number">0</span> <span class="hljs-keyword">THEN</span> <span class="hljs-number">1</span> <span class="hljs-keyword">ELSE</span> (<span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span> <span class="hljs-keyword">FROM</span> INFORMATION_SCHEMA.ENGINES) <span class="hljs-keyword">END</span>); <span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> city;<br></code></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo deploy<br></code></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<p>当 WAIT_FOR_EXECUTED_GTID_SET 执行失败后，原 SQL 就不会再执行，而是将该 SQL 去主节点执行。</p>
+<h4 id="缓存主库查询次数"><a href="#缓存主库查询次数" class="headerlink" title="缓存主库查询次数"></a>缓存主库查询次数</h4><p>概念很简单, 用户新增或修改后, 往Redis中插入一条数据primaryRead:userid为1, 若多次插入, 则进行累加.</p>
+<p>当用户调用查询接口时, 判断用户的查询缓存次数是否存在, 并减一操作后走主库查询. 若不存在或减一后小于0则走从库查询</p>
 
             </div>
             <hr>
             <div>
               <div class="post-metas mb-3">
                 
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Spring-Cloud/">Spring Cloud</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Database/">Database</a>
+                    
+                  </div>
                 
               </div>
               
@@ -270,9 +299,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/03/28/Spring/Zipkin%20Sleuth/">
+                      <a href="/2022/03/28/Spring/Shiro/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Sleuth</span>
+                        <span class="hidden-mobile">Shiro</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -280,8 +309,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/03/27/Computer%20Science/MapReduce/">
-                        <span class="hidden-mobile">MapReduce</span>
+                      <a href="/2022/03/28/Spring/Spring%20Security/">
+                        <span class="hidden-mobile">Spring Security</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

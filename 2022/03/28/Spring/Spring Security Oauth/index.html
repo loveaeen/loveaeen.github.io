@@ -1,0 +1,511 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Spring Security 是一个强大的可高度定制的认证和授权框架，对于Spring应用来说它是一套Web安全标准。SpringSecurity注重于为Java应用提供认证和授权功能，像所有的Spring项目一样，它对自定义需求具有强大的扩展性。 如果要做一个认证登录模块, 那么我们就无法绕过JWT的概念. JWT 是将用户登录信息存储在了用户电脑中, 而不再是服务器里. 如果项目中用户量庞大">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Security Oauth">
+<meta property="og:url" content="http://example.com/2022/03/28/Spring/Spring%20Security%20Oauth/index.html">
+<meta property="og:site_name" content="Loveaeen">
+<meta property="og:description" content="Spring Security 是一个强大的可高度定制的认证和授权框架，对于Spring应用来说它是一套Web安全标准。SpringSecurity注重于为Java应用提供认证和授权功能，像所有的Spring项目一样，它对自定义需求具有强大的扩展性。 如果要做一个认证登录模块, 那么我们就无法绕过JWT的概念. JWT 是将用户登录信息存储在了用户电脑中, 而不再是服务器里. 如果项目中用户量庞大">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-28T01:43:12.000Z">
+<meta property="article:modified_time" content="2022-03-28T03:45:30.608Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>Spring Security Oauth - Loveaeen</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Loveaeen</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Spring Security Oauth">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-28 09:43" pubdate>
+        2022年3月28日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      8.7k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      73 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Spring Security Oauth</h1>
+            
+            <div class="markdown-body">
+              <p><a href="/2022/03/28/Spring/Spring%20Security/">Spring Security</a> 是一个强大的可高度定制的认证和授权框架，对于Spring应用来说它是一套Web安全标准。SpringSecurity注重于为Java应用提供认证和授权功能，像所有的Spring项目一样，它对自定义需求具有强大的扩展性。</p>
+<p>如果要做一个认证登录模块, 那么我们就无法绕过JWT的概念. <strong>JWT</strong> 是将用户登录信息存储在了用户电脑中, 而不再是服务器里. 如果项目中用户量庞大. 并且分为电脑端和移动端. 那么 JWT 是必不可少的.</p>
+<p>但是在企业级项目中，我们更倾向于<strong>OAuth2</strong>的使用。他保证了我们内部系统的登陆认证，也保证了外部系统的访问控制。</p>
+<h2 id="授权模式"><a href="#授权模式" class="headerlink" title="授权模式"></a><strong>授权模式</strong></h2><h3 id="Authorization-Mode"><a href="#Authorization-Mode" class="headerlink" title="Authorization Mode"></a>Authorization Mode</h3><hr>
+<ul>
+<li><strong>Authorization Code</strong><a target="_blank" rel="noopener" href="https://www.wolai.com/mhSjeY23G7Eoe5RsniBS68">授权码</a>：正宗的OAuth2的授权模式，客户端先将用户导向认证服务器，登录后获取授权码，然后进行授权，最后根据授权码获取访问令牌；</li>
+<li>Implicit (隐式授权模式) ：适用于无应用服务器的项目，和授权码模式相比，取消了获取授权码的过程，直接获取访问令牌；</li>
+<li>**Resource Owner Password Credentials **<a target="_blank" rel="noopener" href="https://www.wolai.com/cZMCcwCV8qUCcAxBbfFMpu">密码式</a>：客户端直接向用户获取用户名和密码，之后向认证服务器获取访问令牌；</li>
+<li>Client Credentials (客户端模式) ：客户端直接通过客户端认证 (比如client_id和client_secret) 从认证服务器获取访问令牌。</li>
+</ul>
+<h2 id="授权服务配置适配器"><a href="#授权服务配置适配器" class="headerlink" title="授权服务配置适配器"></a><strong>授权服务配置适配器</strong></h2><h3 id="AuthorizationServerConfigurerAdapter"><a href="#AuthorizationServerConfigurerAdapter" class="headerlink" title="AuthorizationServerConfigurerAdapter"></a>AuthorizationServerConfigurerAdapter</h3><hr>
+<ul>
+<li>configure(ClientDetailsServiceConfigurer clients): 配置客户端的授权模式 , 客户端ID , 权限范围 , 权限类型 , token有效期等.</li>
+<li>configure(AuthorizationServerEndpointsConfigurer endpoints): 配置具体的授权模式规则 , 如JWT 密码模式</li>
+</ul>
+<h2 id="过滤器链"><a href="#过滤器链" class="headerlink" title="过滤器链"></a><strong>过滤器链</strong></h2><h3 id="WebSecurityConfigurerAdapter-ResourceServerConfigurerAdapter"><a href="#WebSecurityConfigurerAdapter-ResourceServerConfigurerAdapter" class="headerlink" title="WebSecurityConfigurerAdapter(ResourceServerConfigurerAdapter)"></a>WebSecurityConfigurerAdapter(ResourceServerConfigurerAdapter)</h3><hr>
+<ul>
+<li>WebSecurityConfigurerAdapter 是 Spring security默认情况下的http配置，而 ResourceServerConfigurerAdapter 是Spring security oauth2 默认情况下的http配置。ResourceServerConfigurerAdapter 的优先级更高一些</li>
+<li><strong>同样的资源地址，只会在优先级最高的 ResourceServerConfigurerAdapter 中生效，如果 WebSecurityConfigurerAdapter 也配置了这个资源地址，则不会生效</strong><ul>
+<li>configure(HttpSecurity httpSecurity)：用于配置需要拦截的url路径、jwt过滤器及出异常后的处理器；</li>
+<li>configure(AuthenticationManagerBuilder auth)：用于配置UserDetailsService及PasswordEncoder；</li>
+<li>RestfulAccessDeniedHandler ：当用户没有访问权限时的处理器，用于返回JSON格式的处理结果</li>
+<li>RestAuthenticationEntryPoint ：当未登录或token失效时，返回JSON格式的结果</li>
+<li>UserDetailsService:SpringSecurity定义的核心接口，用于根据用户名获取用户信息，需要自行实现；</li>
+<li>UserDetails：SpringSecurity定义用于封装用户信息的类（主要是用户信息和权限），需要自行实现；</li>
+<li>PasswordEncoder：SpringSecurity定义的用于对密码进行编码及比对的接口，目前使用的是BCryptPasswordEncoder；</li>
+<li>JwtAuthenticationTokenFilter：在用户名和密码校验前添加的过滤器，如果有jwt的token，会自行根据token信息进行登录。</li>
+</ul>
+</li>
+</ul>
+<h2 id="过滤链"><a href="#过滤链" class="headerlink" title="过滤链"></a><strong>过滤链</strong></h2><h3 id="SecurityWebFilterChain"><a href="#SecurityWebFilterChain" class="headerlink" title="SecurityWebFilterChain"></a>SecurityWebFilterChain</h3><hr>
+<ul>
+<li>SpringSecurityFilterChain 作为 SpringSecurity 的核心过滤器链在整个认证授权过程中起着举足轻重的地位，每个请求到来，都会经过该过滤器链</li>
+<li>如果你想自己实现每一个自定义的未授权 , 未认证 , 白名单等策略 , 可以定制该过滤器链</li>
+</ul>
+<h2 id="授权管理器"><a href="#授权管理器" class="headerlink" title="授权管理器"></a><strong>授权管理器</strong></h2><h3 id="ReactiveAuthorizationManager"><a href="#ReactiveAuthorizationManager" class="headerlink" title="ReactiveAuthorizationManager"></a>ReactiveAuthorizationManager</h3><hr>
+<ul>
+<li>WebFlux授权管理器 , 可以当成是拦截器的一种 , 重写方法对授权做自定义处理 , 比如白名单 , 跨域等.</li>
+<li><strong>因为Spring Cloud Gateway使用是基于WebFlux与Netty开发的，所以与传统的Servlet方式不同</strong></li>
+</ul>
+<h2 id="密码式登陆"><a href="#密码式登陆" class="headerlink" title="密码式登陆"></a>密码式登陆</h2><p>Token相关的接口都应该采用Basic base64的请求头，业务相关的接口都应该采用Bearer token的请求头</p>
+<h3 id="认证逻辑"><a href="#认证逻辑" class="headerlink" title="认证逻辑"></a><strong>认证逻辑</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></div></td><td class="code"><pre><code class="hljs Java">**# 在实际的开发中，我们不一定需要Basic的方式来对client进行解密验证方式，这只是pig自己的方式。但是的确蛮好用**<br>**# 请求头是Authorization=Basic base64.encode(client_id:client_secret) **<br><br><span class="hljs-comment">// 用户填写账户密码，发送登录请求，后台登录 API 主动发起获取/oauth/token的请求。</span><br><br><span class="hljs-comment">// 我们可以在中间加入网关拦截，验证base64的解密后格式是否正确</span><br>ValidateCodeGatewayFilter.apply()<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* 过滤器拦住Basic请求</span><br><span class="hljs-comment">* Spring让他默认拦截/oauth/token</span><br><span class="hljs-comment">*/</span><br>BasicAuthenticationFilter&#123;<br>  <span class="hljs-keyword">void</span> <span class="hljs-title function_">doFilterInternal</span><span class="hljs-params">()</span>&#123;<br>    <span class="hljs-comment">// 所以再进入BasicAuthenticationFilter过滤器中，将client_id与client_secret解析，变成UsernamePasswordAuthenticationToken对象</span><br>    <span class="hljs-type">UsernamePasswordAuthenticationToken</span> <span class="hljs-variable">authRequest</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.authenticationConverter.convert(request);<br>    <br>    <span class="hljs-comment">// 再通过一系列调用去找数据库存的客户端信息和传入的客户端信息比较，如果client_id或client_secret是错的，就报错。</span><br>    <span class="hljs-type">Authentication</span> <span class="hljs-variable">authResult</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.authenticationManager.authenticate(authRequest);<br>    <br>    ProviderManager.authenticate()<br>    →AbstractUserDetailsAuthenticationProvider.authenticate()<br>    →AbstractUserDetailsAuthenticationProvider.retrieveUser()<br>    →DaoAuthenticationProvider.retrieveUser()<br>    →ClientDetailsUserDetailsService.loadUserByUsername()<br>    →配置的PigClientDetailsService.loadClientByClientId()<br>  &#125;<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* 专门拦截/oauth/token请求</span><br><span class="hljs-comment">*/</span><br>ClientCredentialsTokenEndpointFilter <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AbstractAuthenticationProcessingFilter</span>&#123;<br>  <br>  Authentication <span class="hljs-title function_">attemptAuthentication</span><span class="hljs-params">()</span>&#123;<br>    <span class="hljs-comment">// 根据clientId和clientSecret最终会去查询client信息</span><br>    <span class="hljs-built_in">this</span>.getAuthenticationManager().authenticate(authRequest);<br>    -&gt; DaoAuthenticationProvider.retrieveUser()<br>    -&gt; ClientDetailsUserDetailsService.loadUserByUsername();<br>  &#125;<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* oauth2.0 token请求接口</span><br><span class="hljs-comment">*/</span><br>TokenEndPoint&#123;<br>  ResponseEntity&lt;OAuth2AccessToken&gt; <span class="hljs-title function_">postAccessToken</span><span class="hljs-params">()</span>&#123;<br>    <span class="hljs-comment">// 获取client信息，验证请求，授权码和密码式都会进来</span><br>    <br>    <span class="hljs-comment">// 做一些验证操作，内部会开始创建OAuth2AccessToken对象</span><br>    <span class="hljs-type">OAuth2AccessToken</span> <span class="hljs-variable">token</span> <span class="hljs-operator">=</span> getTokenGranter().grant(tokenRequest.getGrantType(), tokenRequest);<br>    <br>    AbstractTokenGranter&#123;<br>      OAuth2AccessToken <span class="hljs-title function_">grant</span><span class="hljs-params">()</span>&#123;<br>        <span class="hljs-comment">// 通过 DefaultTokenServices.createAccessToken() 从tokenStore缓存实现PigCustomTokenServices类中创建OAuth2AccessToken对象，还可以用增强器tokenEnhancer加入附加信息，比如用户对象。</span><br>        <span class="hljs-comment">// 存入缓存，返回对象</span><br>        tokenServices.createAccessToken(getOAuth2Authentication(client, tokenRequest))<br>      &#125;<br>    &#125;<br>    <span class="hljs-comment">// 一系列操作结束后，返回给请求方token对象</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="正常访问"><a href="#正常访问" class="headerlink" title="正常访问"></a><strong>正常访问</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs Java">**# 请求头需要加入Authorization=Bearer token的模式供服务端验证**<br><br>*<span class="hljs-comment">// 网关不做鉴权拦截，只转发，具体的鉴权操作交由对应的业务微服务处理。只要引入Security依赖，并读取Redis中的Token即可*</span><br><br>*<span class="hljs-comment">// 区别于Auth微服务的AuthorizationServerTokenServices(PigCustomTokenServices)</span><br><span class="hljs-comment">// 我们需要一个通用的ResourceServerTokenServices（PigLocalResourceServerTokenServices）来处理当前业务微服务的令牌认证问题*</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* 请求被拦截，开始校验并转换成认证对象，给调用链使用</span><br><span class="hljs-comment">* feign调用也进来这，所以我们需要在feign调用的时候，把请求头带上</span><br><span class="hljs-comment">*/</span><br>OAuth2AuthenticationProcessingFilter&#123;<br>  <span class="hljs-keyword">void</span> <span class="hljs-title function_">doFilter</span><span class="hljs-params">()</span>&#123;<br>    <span class="hljs-comment">// 从当前线程中抽取请求头的Token值</span><br>    <span class="hljs-comment">// 这一步在feign调用的时候很正常，用于token传递</span><br>    <span class="hljs-type">Authentication</span> <span class="hljs-variable">authentication</span> <span class="hljs-operator">=</span> tokenExtractor.extract(request);<br>    <span class="hljs-keyword">if</span> (authentication == <span class="hljs-literal">null</span>) &#123;<br>      <span class="hljs-comment">// 输出点日志</span><br>    &#125;<span class="hljs-keyword">else</span> &#123;<br>      <span class="hljs-comment">// 很长的调用，主要是通过token获取认证对象</span><br>      <span class="hljs-type">Authentication</span> <span class="hljs-variable">authResult</span> <span class="hljs-operator">=</span> authenticationManager.authenticate(authentication);<br>      -&gt; OAuth2AuthenticationManager.authenticate(authentication)<br>      -&gt; ResourceServerTokenServices.loadAuthentication(accessToken)<br>      -&gt; PigLocalResourceServerTokenServices(自定义).loadAuthentication(accessToken)<br>      <br>      <span class="hljs-comment">// 存入线程</span><br>      SecurityContextHolder.getContext().setAuthentication(authResult);<br>    &#125;<br>  &#125;<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* 权限拦截器,方法前拦截</span><br><span class="hljs-comment">*/</span><br>FilterSecurityInterceptor <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AbstractSecurityInterceptor</span>&#123;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="Token续期"><a href="#Token续期" class="headerlink" title="Token续期"></a>Token续期</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs Java">**# 前端可以定时调用/oauth/check_token端点检测Token是否失效过期**<br><br>CheckTokenEndpoint&#123;<br>  checkToken(<span class="hljs-meta">@RequestParam(&quot;token&quot;)</span> String value) &#123;<br>    resourceServerTokenServices.loadAuthentication(token.getValue());<br>  &#125;<br>&#125;<br><br>**# 若即将失效，则刷新令牌/oauth/token?grant_type=refresh_token**<br>**# 如果想要用户请求时对令牌续期，需要在tokenServices#loadAuthentication中进行重写**<br>TokenEndPoint&#123;<br>  ResponseEntity&lt;OAuth2AccessToken&gt; <span class="hljs-title function_">postAccessToken</span><span class="hljs-params">()</span>&#123;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<hr>
+<h2 id="授权码登陆"><a href="#授权码登陆" class="headerlink" title="授权码登陆"></a>授权码登陆</h2><h3 id="认证逻辑-1"><a href="#认证逻辑-1" class="headerlink" title="认证逻辑"></a><strong>认证逻辑</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><code class="hljs Java">**# 如果是内部平台做Oauth2的逻辑，那就先登陆，再跳转到authorize接口**<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* 授权码模式专用授权请求</span><br><span class="hljs-comment">* oauth/authorize?</span><br><span class="hljs-comment">* response_type=code&amp;</span><br><span class="hljs-comment">* client_id=CLIENT_ID&amp;</span><br><span class="hljs-comment">* redirect_uri=CALLBACK_URL&amp;</span><br><span class="hljs-comment">* scope=read</span><br><span class="hljs-comment">*/</span><br><br><span class="hljs-meta">@SessionAttributes</span><br>AuthorizationEndpoint&#123;<br>  <span class="hljs-comment">// 最终返回confirm页面，供用于确认授权</span><br>  <span class="hljs-comment">// 可以自定义该页面</span><br>  ModelAndView <span class="hljs-title function_">authorize</span><span class="hljs-params">(Principal principal)</span>&#123;<br>    <span class="hljs-comment">// 因为类加入了Session注解，所以将model内容存储在了Session中</span><br>    <span class="hljs-comment">// 后续confirm页面提交时，也会拿到这次的内容</span><br>    <span class="hljs-comment">// 如果redis已经存在该clientId+userName的key，则省略confirm确认，直接返回重定向</span><br>  &#125;<br>&#125;<br><br>**# 如果是第三方调用的话，会在访问authorize接口的时候，因未登录被拦截器重定向到登陆页面，先登陆，然后再返回到authorize接口**<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* confirm页面请求通过，并携带了**user_oauth_approval**参数</span><br><span class="hljs-comment">*/</span><br>AuthorizationEndpoint&#123;<br>  <span class="hljs-comment">// 最终返回重定向地址，并拼接code参数传回</span><br>  View <span class="hljs-title function_">approveOrDeny</span><span class="hljs-params">(<span class="hljs-meta">@RequestParam</span> Map&lt;String, String&gt; approvalParameters, Map&lt;String, ?&gt; model, Principal principal)</span>&#123;<br>    <span class="hljs-comment">// 获取从authorize方法存储进session的内容</span><br>    <span class="hljs-comment">// 进行一系列验证后，返回重定向地址+code</span><br>    <span class="hljs-comment">// code默认放进ConcurrentHashMap里面，只要不用，就会一直存在</span><br>  &#125;<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* 专门拦截/oauth/token请求</span><br><span class="hljs-comment">*/</span><br>ClientCredentialsTokenEndpointFilter <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AbstractAuthenticationProcessingFilter</span>&#123;<br>  <br>  Authentication <span class="hljs-title function_">attemptAuthentication</span><span class="hljs-params">()</span>&#123;<br>    <span class="hljs-comment">// 根据clientId和clientSecret最终会去查询client信息</span><br>    <span class="hljs-built_in">this</span>.getAuthenticationManager().authenticate(authRequest);<br>    -&gt; DaoAuthenticationProvider.retrieveUser()<br>    -&gt; ClientDetailsUserDetailsService.loadUserByUsername(username);<br>    -&gt; ClientDetailsService.loadClientByClientId(username);<br>  &#125;<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* oauth/token?</span><br><span class="hljs-comment">* client_id=CLIENT_ID&amp;</span><br><span class="hljs-comment">* client_secret=CLIENT_SECRET&amp;</span><br><span class="hljs-comment">* grant_type=authorization_code&amp;</span><br><span class="hljs-comment">* code=AUTHORIZATION_CODE&amp;</span><br><span class="hljs-comment">* redirect_uri=CALLBACK_URL</span><br><span class="hljs-comment">*/</span><br>TokenEndPoint&#123;<br><br>  ResponseEntity&lt;OAuth2AccessToken&gt; <span class="hljs-title function_">postAccessToken</span><span class="hljs-params">()</span>&#123;<br>    <span class="hljs-type">OAuth2AccessToken</span> <span class="hljs-variable">token</span> <span class="hljs-operator">=</span> getTokenGranter().grant(tokenRequest.getGrantType(), tokenRequest);<br>    -&gt; AuthorizationServerEndpointsConfigurer.grant()<br>    -&gt; CompositeTokenGranter.grant()<br>    <span class="hljs-comment">// 删除之前的code并返回对应的认证对象，与token值绑定</span><br>    -&gt; AuthorizationCodeTokenGranter.grant().getOAuth2Authentication(client, tokenRequest)<br>    <span class="hljs-comment">// 令牌增强器也在这</span><br>    -&gt; PigCustomTokenServices.createAccessToken(oAuth2Authentication)<br>    <span class="hljs-comment">// 一系列操作结束后，返回给请求方token对象</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="正常访问-1"><a href="#正常访问-1" class="headerlink" title="正常访问"></a>正常访问</h3><p>与密码式相同</p>
+<h3 id="Token失效"><a href="#Token失效" class="headerlink" title="Token失效"></a>Token失效</h3><p>与密码式相同</p>
+<hr>
+<h2 id="SSO"><a href="#SSO" class="headerlink" title="SSO"></a>SSO</h2><p><a target="_blank" rel="noopener" href="https://www.wolai.com/38CLrTyqcMwKFhK73pSDH">SSO单点登录</a></p>
+<p>以Pig项目为例，Auth服务配置了「Spring Security」「Spring Security Oauth2密码模式」「Spring Security Oauth2授权码模式」三种认证方式。</p>
+<p>简单的Spring Security配置是为了在SSO单点登录时与Session结合，让Oauth2授权码模式能够记住登录状态。</p>
+<p>Spring Security Oauth2密码模式是为了给项目内微服务认证使用。</p>
+<hr>
+<h2 id="拓展相关🌟🌟"><a href="#拓展相关🌟🌟" class="headerlink" title="拓展相关🌟🌟"></a>拓展相关🌟🌟</h2><h3 id="BearerTokenExtractor"><a href="#BearerTokenExtractor" class="headerlink" title="BearerTokenExtractor"></a>BearerTokenExtractor</h3><p>该类是通过<code>OAuth2AuthenticationProcessingFilter</code>过滤器默认调用，专门处理用户访问请求，剥离Header中的<code>access_token</code>来确认用户令牌。我们可以实现该类，采用别的名称来替换<code>access_token</code>。比如掘金的就是<code>X-Legacy-Token</code>而非必须是 <code>Authorization</code></p>
+<p>也可以参考pig项目，增加注解AOP实现，对部分接口实现白名单策略，分别解决外部访问以及feign调用的问题。</p>
+<p>Inner注解的使用 <a target="_blank" rel="noopener" href="https://www.yuque.com/pig4cloud/pig/hz5ppn">https://www.yuque.com/pig4cloud/pig/hz5ppn</a></p>
+<h3 id="OAuth2FeignRequestInterceptor"><a href="#OAuth2FeignRequestInterceptor" class="headerlink" title="OAuth2FeignRequestInterceptor"></a>OAuth2FeignRequestInterceptor</h3><p>是为了解决Spring服务中Feign调用时，无法将Token通过Header传递给下游服务的问题。</p>
+<p>该类需要程序员实现子类，在Feign调用前从线程中获取authentication对象并传递给父类做内部持有。主要方法是<code>accessTokenContextRelay.copyToken()</code>。</p>
+<p>然后<code>OAuth2FeignRequestInterceptor</code>会根据内部持有的对象对下游服务发起携带Header的请求。下游服务可以从Header中获取Token值，并转换为authentication对象。</p>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p>Oauth2.0的数据库说明 <a target="_blank" rel="noopener" href="https://andaily.com/spring-oauth-server/db_table_description.html">https://andaily.com/spring-oauth-server/db_table_description.html</a></p>
+<p>Spring Oauth流程说明 <a target="_blank" rel="noopener" href="https://www.yuque.com/pig4cloud/pig/dqnyuc">https://www.yuque.com/pig4cloud/pig/dqnyuc</a></p>
+<p>分布式系统下的认证与授权 <a target="_blank" rel="noopener" href="https://www.bmpi.dev/dev/authentication-and-authorization-in-a-distributed-system/">https://www.bmpi.dev/dev/authentication-and-authorization-in-a-distributed-system/</a></p>
+<hr>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Spring-Cloud/">Spring Cloud</a>
+                    
+                  </div>
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/28/Spring/Sentinel/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Sentinel</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/28/Spring/Shiro/">
+                        <span class="hidden-mobile">Shiro</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
