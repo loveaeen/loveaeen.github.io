@@ -1,8 +1,8 @@
 ---
 title: MapReduce
 date: 2022-03-27 15:32:33
-categories: git
-tags: paper
+categories: Paper
+tags: 
 math: true
 typora-root-url: ../../
 ---
