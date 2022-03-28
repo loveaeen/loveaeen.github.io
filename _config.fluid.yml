@@ -112,7 +112,13 @@ post:
     enable: true
     specific: true # 开启此项的话，文章头部必须启用 math: true 才可以用latex公式
     engine: mathjax
-
+# 关于自己
+about:
+  name: "loveaeen"
+  intro: "人生实在太短暂了，尽情做自己吧"
+  icons:
+    - { class: 'iconfont icon-github-fill', link: 'https://github.com/loveaeen', tip: 'GitHub' }
+    - { class: 'iconfont icon-wechat-fill', qrcode: '/image/wechat.jpg' }
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
