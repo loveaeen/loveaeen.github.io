@@ -23,8 +23,6 @@ tags:
 
 ## 认证
 
----
-
 ### Session
 
 从**`AbstractShiroFilter`**`#doFilterInternal`进入
@@ -50,19 +48,19 @@ Shiro创建Session交由`SessionFactory`负责, 我们可以实现该类, 创建
 
 #### 失效
 
-**`AbstractShiroFilter`**` #doFilterInternal`过滤器每一次会触发更新Session的操作`updateSessionLastAccessTime`, 最终会触发`SessionDao.update()`, 将更新后的session存入缓存
+ **`AbstractShiroFilter`** ` #doFilterInternal`过滤器每一次会触发更新Session的操作`updateSessionLastAccessTime`, 最终会触发`SessionDao.update()`, 将更新后的session存入缓存
 
-Shiro默认会采用定时线程检测session是否失效, 具体可查看定时器类**`ExecutorServiceSessionValidationScheduler`** 与失效session管理类**`AbstractValidatingSessionManager`**
+Shiro默认会采用定时线程检测session是否失效, 具体可查看定时器类 **`ExecutorServiceSessionValidationScheduler`** 与失效session管理类 **`AbstractValidatingSessionManager`** 
 
 研发人员可实现这两个类, 自己实现相关session失效后的业务逻辑
 
 ### 认证拦截
 
-从统一入口**`OncePerRequestFilter`**儿子类**`AdviceFilter`**`#doFilterInternal`进入, 如果状态为true, 则调用`executeChain`做后续filter责任链处理, 并可以自定义`postHandle`方法
+从统一入口 **`OncePerRequestFilter`** 儿子类 **`AdviceFilter`** `#doFilterInternal`进入, 如果状态为true, 则调用`executeChain`做后续filter责任链处理, 并可以自定义`postHandle`方法
 
-再交由孙子类`**PathMatchingFilte**``#preHandle #isFilterChainContinued `
+再交由孙子类 **`PathMatchingFilte`** `#preHandle #isFilterChainContinued `
 
-接着孙孙子类**`AccessControlFilter`**`#onPreHandle` 进行权限认证鉴权
+接着孙孙子类 **`AccessControlFilter`** `#onPreHandle` 进行权限认证鉴权
 
 当访问非anon拦截时, 会交由UserFilter处理认证逻辑, 若认证失败则转到登录页面.
 
@@ -70,13 +68,11 @@ Shiro默认会采用定时线程检测session是否失效, 具体可查看定时
 
 ## 鉴权
 
----
-
 当我们访问带有Shiro权限注释的方法时, 会被`AnnotationsAuthorizingMethodInterceptor`拦截到, 其内部会通过循环对多个权限注释的handler处理类进行鉴权处理, 如果权限不对, 则报错
 
 多个handler最终还是会交由`AuthorizingSecurityManager`来做精细化的权限处理.
 
-而在更内部则会调用**`AuthorizingRealm`**`#getAuthorizationInfo`方法, 该方法内部先从Cache获取用户实体, 如果获取不到, 则调用自定义方法从数据库拿
+而在更内部则会调用 **`AuthorizingRealm`** `#getAuthorizationInfo`方法, 该方法内部先从Cache获取用户实体, 如果获取不到, 则调用自定义方法从数据库拿
 
 ### 缓存
 
