@@ -1,5 +1,5 @@
 ---
-title: Nginx
+title: OpenResty
 date: 2022-03-28 09:43:12
 excerpt: Nginx是一个高性能的HTTP和反向代理web服务器，同时也提供了IMAP/POP3/SMTP服务。
 categories: Distributed System
