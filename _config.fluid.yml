@@ -98,6 +98,8 @@ ignore:
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 theme: fluid
+# google搜索
+custom_head: '<meta name="google-site-verification" content="AFYmVbrqTDm4JPuzmWR2gYFKjKaIe7rUEuODopJnMLY" /><meta name="baidu-site-verification" content="code-IHNg05B7vK" />'
 # 左上角标题文字
 navbar:
   blog_title: Loveaeen
