@@ -31,7 +31,7 @@ Resource Manager (RM)： 控制分支事务，负责分支注册、状态汇报�
 
 - TC 调度 `XID` 下管辖的全部分支事务完成提交或回滚请求。
 
-## [AT](http://seata.io/zh-cn/docs/dev/mode/at-mode.html#:~:text=SELECT 语句。-,工作机制,-以一个示例)[模式](http://seata.io/zh-cn/docs/dev/mode/at-mode.html#:~:text=SELECT 语句。-,工作机制,-以一个示例)
+## [AT模式](https://seata.io/zh-cn/docs/dev/mode/at-mode.html)
 
 AT模式是一种无侵入的, 基于 2PC 的分布式事务解决方案，但他并不是完美的，为了解决事务的补偿与全局事务一致性的问题，它加入了before image与after image，并会插入undo log表中用于事务回滚，而且还有少不了的RPC同步通信。组件的额外加入必然增加了不少的开销，想一想每一个sql的执行都会有如此多的额外开销，项目的分布式事务性能必然会大幅度降低。业内也有一种思路，通过数据库binlog还原镜像前后的SQL，省去了undo log生成记录的同步，降低了性能损失，同时零业务入侵，个人觉得是更好的方法。
 
