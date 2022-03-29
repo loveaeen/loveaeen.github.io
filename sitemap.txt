@@ -1,3 +1,5 @@
+https://loveaeen.github.io/2022/03/29/Computer%20Science/GFS/
+https://loveaeen.github.io/2022/03/29/Class%20Note/MIT%206.824/
 https://loveaeen.github.io/2022/03/28/Distributed%20System/Seata/
 https://loveaeen.github.io/2022/03/28/Distributed%20System/ElasticSearch/
 https://loveaeen.github.io/2022/03/28/Distributed%20System/Zookeeper/
@@ -52,3 +54,4 @@ https://loveaeen.github.io/categories/Spring-Cloud/
 https://loveaeen.github.io/categories/DataBase/
 https://loveaeen.github.io/categories/git/
 https://loveaeen.github.io/categories/Container/
+https://loveaeen.github.io/categories/Class-Note/

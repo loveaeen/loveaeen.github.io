@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://loveaeen.github.io/2022/03/29/Computer%20Science/GFS/</loc>
+    <lastmod>2022-03-29</lastmod>
+  </url>
+  <url>
+    <loc>https://loveaeen.github.io/2022/03/29/Class%20Note/MIT%206.824/</loc>
+    <lastmod>2022-03-29</lastmod>
+  </url>
+  <url>
     <loc>https://loveaeen.github.io/2022/03/28/Distributed%20System/Seata/</loc>
     <lastmod>2022-03-29</lastmod>
   </url>
