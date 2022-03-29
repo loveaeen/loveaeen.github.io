@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://loveaeen.github.io/image/Mysql/format,png-20220328150555793.png">
 <meta property="og:image" content="https://loveaeen.github.io/image/Mysql/iShot2022-02-17%2015.14.10.png">
 <meta property="article:published_time" content="2022-03-28T06:43:12.000Z">
-<meta property="article:modified_time" content="2022-03-28T07:14:45.482Z">
+<meta property="article:modified_time" content="2022-03-29T06:08:51.215Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://loveaeen.github.io/image/Mysql/imgs%252Fapp%252FRoamWeb%252Fw6_LOfove7.jpeg">
@@ -248,16 +248,14 @@
             <div class="markdown-body">
               <p>Mysql是目前主流的数据库之一, 跟<strong>Oracle</strong>相比, 他更轻量, 并且互联网上关于对他的插件扩展也更多. 他的索引页, 数据页, 缓存页, 都是我们需要掌握并了解的. 当你掌握了这些知识以后, 你对Mysql性能调优会更有把握, 并且与人交谈时, 会显示你的资本积累无比深厚, 自然显得技术高强些. 当然, 光看文字也是不行的, 你也需要搭配一些图例来让脑海中的知识更加清晰化。</p>
 <p>首先我们如果需要了解Mysql, 首当其冲的就是<strong>Buffer pool</strong>概念. 我们知道Mysql是将数据插入至磁盘的, 但是我们不能一直和磁盘打交道. 这样会让我们的读&#x2F;写速度都很慢. 所以Mysql会将一些数据放入到内存中, 优先和内存数据交互</p>
-<h2 id="Buffer-pool"><a href="#Buffer-pool" class="headerlink" title="Buffer pool"></a>Buffer pool</h2><ul>
-<li>缓冲池默认是 <strong>128Mb</strong> , 存储的全都是<strong>数据页</strong><sup id="fnref:1" class="footnote-ref"><a href="#fn:1" rel="footnote"><span class="hint--top hint--rounded" aria-label="Mysql的数据虽然是一行一行的, 但是这些数据会最终存储在数据页里面. 当用户查询&#x2F;更新某一条数据时, 会将该数据的当前页以及相邻页全部放入到缓冲池里面.
+<h2 id="Buffer-pool"><a href="#Buffer-pool" class="headerlink" title="Buffer pool"></a>Buffer pool</h2><p>缓冲池默认是 <strong>128Mb</strong> , 存储的全都是<strong>数据页</strong><sup id="fnref:1" class="footnote-ref"><a href="#fn:1" rel="footnote"><span class="hint--top hint--rounded" aria-label="Mysql的数据虽然是一行一行的, 但是这些数据会最终存储在数据页里面. 当用户查询&#x2F;更新某一条数据时, 会将该数据的当前页以及相邻页全部放入到缓冲池里面.
 ">[1]</span></a></sup>的信息. 数据页会存储在磁盘和缓存中. 但是如果存储在缓存的话, 我们一般称之为<strong>缓存页</strong>. 既然学习到数据页的概念, 那么我们也要简单看一下数据页长什么样子. 除了数据页本身, 缓冲池里面还会记录每一个数据页的<strong>描述信息</strong><sup id="fnref:2" class="footnote-ref"><a href="#fn:2" rel="footnote"><span class="hint--top hint--rounded" aria-label="描述信息是数据页所属的表空间, 数据页的编号, 在缓冲池中的地址以及一些额外信息. 描述文件大约占据缓冲池的5%容量. 比如你创建的是128Mb的缓冲池. 那么加上描述信息, 实际上在130+左右的大小. 
-">[2]</span></a></sup></li>
-<li>缓冲池初始化时并不是空的, 它会默认用空缓存页填充自己. 类似于占位符一样的形式. 所以需要使用free链表来判断哪些缓存页是可以存入的.</li>
-<li>那么如果某个缓存页被用户读取了之后, 用户修改了这个缓存页怎么办, 那不就跟磁盘数据不一致了吗? 于是乎, flush链表出现了.</li>
-<li>缓存页可以让我们加速数据处理, 但缓冲池的空间是固定的, 以前旧的不常用的缓存页怎么删除, 腾出空间给新的缓存页呢? LRU链表</li>
-<li>缓冲池是用户主要打交道的组件, 那么磁盘数据是如何放到缓冲池里面的呢? 数据页何时被缓存</li>
-<li>既然我们有了这么多的链表结构, 那么会不会定时清理一些不用的缓存页呢? 定期清理缓存链表</li>
-</ul>
+">[2]</span></a></sup></p>
+<p>缓冲池初始化时并不是空的, 它会默认用空缓存页填充自己. 类似于占位符一样的形式. 所以需要使用free链表来判断哪些缓存页是可以存入的.</p>
+<p>那么如果某个缓存页被用户读取了之后, 用户修改了这个缓存页怎么办, 那不就跟磁盘数据不一致了吗? 于是乎, flush链表出现了.</p>
+<p>缓存页可以让我们加速数据处理, 但缓冲池的空间是固定的, 以前旧的不常用的缓存页怎么删除, 腾出空间给新的缓存页呢? LRU链表</p>
+<p>缓冲池是用户主要打交道的组件, 那么磁盘数据是如何放到缓冲池里面的呢? 数据页何时被缓存</p>
+<p>既然我们有了这么多的链表结构, 那么会不会定时清理一些不用的缓存页呢? 定期清理缓存链表</p>
 <h3 id="Free链表"><a href="#Free链表" class="headerlink" title="Free链表"></a>Free链表</h3><p>因为缓冲池里面缓存页都是占位形式, 所以我们不知道哪些缓存页是空闲状态. 于是Mysql增加了双向链表来判断. 首先当数据库初始化的时候, 缓存页全部都是空的, 那么这些缓存页的描述信息都会存入到链表里面来. 只要有缓存页需要被存入, 那么就会把链表里对应的描述信息删除.</p>
 <h3 id="Flush链表"><a href="#Flush链表" class="headerlink" title="Flush链表"></a>Flush链表</h3><p>当用户修改了缓存页的信息时, 磁盘数据页并没有被刷新, 这时候就被称之为[脏页] 所以Mysql规定了, 如果当用户修改了缓存页信息, 则会把缓存页的描述信息块存放到flush链表里来. 后续是要被flush到磁盘里的</p>
 <h3 id="LRU链表"><a href="#LRU链表" class="headerlink" title="LRU链表"></a>LRU链表</h3><p>为了在有限的空间内, 尽量让热点数据存储进来, 于是出现了LRU链表. 但是Mysql的LRU链表并不是我们认为的那种, 他是两部分链表, 分为[<strong>热数据</strong> , <strong>冷数据</strong>] [[LRU链表图]]. 当一个数据页被存入缓冲池中时, LRU链表就会将该条缓存页的描述信息加载到<strong>冷数据链表</strong>的头部.</p>
@@ -421,7 +419,7 @@
 </ol>
 <h3 id="High-Availability"><a href="#High-Availability" class="headerlink" title="High Availability"></a>High Availability</h3><h4 id="MHA"><a href="#MHA" class="headerlink" title="MHA"></a>MHA</h4><p><strong>MHA</strong>由两部分组成：<strong>MHA Manager</strong>（管理节点）和<strong>MHA Node</strong>（数据节点）。MHA Manager可以单独部署在一台独立的机器上管理多个master-slave集群，也可以部署在一台slave节点上，生产环境中多数单独部署。 MHA Node运行在每个MySQL服务器上，MHA Manager会定时探测集群中的master节点，当master出现故障时，它可以自动将判断最新数据的slave提升为新的master，并将所有其他的slave重新指向新的master。但是需要注意MHA是不会管Slave是否宕机的，如果Slave宕机，应用程序依然会错误的向其发起请求。</p>
 <p>在一个Master node CRASH时，MHA 负责Master-Slave Auto-failover，默认情况下，MySQL复制是异步的。MHA试图从宕机的主服务器上保存二进制日志，通过ssh补齐日志，所以需要root用户，同时负载启停VIP. 如果主服务器崩溃，则它已提交的事务可能尚未传输到任何从服务器。因此，在这种情况下从主服务器到从服务器的故障转移可能导致事务丢失，所以通常还需要使用半同步替代异步，与半同步复制相结合，可以降低由于主硬件故障导致数据丢失的风险。</p>
-<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904099075325960#heading-10https://juejin.cn/post/6844904099075325960#heading-10">简单搭建请点击这里</a><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904099075325960#heading-10https://juejin.cn/post/6844904099075325960#heading-10">🔗</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904099075325960#heading-10">简单搭建请点击这里🔗</a></p>
 <p>生产环境中最常用的还是采用MHA方案，并且网络上有使用master_ip_failover_script脚本创建Zookeeper节点的方式，再由Java监听后让ShardingSphere动态切换主库的高可用方案，但是没找到具体实现，而且这套架构无法实现检测从库是否正常，所以我们可以再引入HAProxy组件，对所有slave节点进行负载均衡。</p>
 <h4 id="MGR"><a href="#MGR" class="headerlink" title="MGR"></a>MGR</h4><p>MGR是Mysql内置的高可用组件，需要Mysql开启GTID方案才能使用。这个方式是Oracle公司推荐的，并且可以与ShardingSphere相结合实现动态转移 (目前只支持单主模式)。</p>
 <h4 id="HAProxy"><a href="#HAProxy" class="headerlink" title="HAProxy"></a>HAProxy</h4><p>HAProxy 代表 High Availability Proxy，是一款出色的基于软件的 TCP&#x2F;HTTP 负载均衡器。 它在一组服务器之间分配工作负载，以最大限度地提高性能并优化资源使用。 HAProxy 使用复杂且可定制的健康检查方法构建，允许在单个运行实例中实现多个服务的负载平衡。</p>
