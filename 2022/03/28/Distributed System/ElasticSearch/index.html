@@ -26,7 +26,7 @@
 <meta property="og:image" content="https://loveaeen.github.io/image/ElasticSearch/11.png">
 <meta property="og:image" content="https://loveaeen.github.io/image/ElasticSearch/iShot2021-09-03%2013.52.52.png">
 <meta property="article:published_time" content="2022-03-28T08:43:12.000Z">
-<meta property="article:modified_time" content="2022-03-28T09:50:18.283Z">
+<meta property="article:modified_time" content="2022-03-29T01:17:11.377Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Database">
 <meta name="twitter:card" content="summary_large_image">
@@ -264,8 +264,8 @@
 <p>当TransLog文件大小达到一定的阈值后, 会触发Commit操作. 就是将Os Cache数据全部刷入磁盘. ElasticSearch也会有一个定时器每隔30分钟进行一次Commit操作</p>
 <p><img src="/image/ElasticSearch/11.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <h3 id="How-to-read？"><a href="#How-to-read？" class="headerlink" title="How to read？"></a>How to read？</h3><p>那么既然我们存在了两个主分片, 当我们查询其中一条数据时, ElasticSearch如何帮我们找到具体在哪个分片中呢? 其实与写入操作是相似的, 也是需要根据id来进行HASH路由找到具体的分片, 如果该分片有备份分片的话, 则会默认采取round-robin随机轮询算法去找一个分片来查询.</p>
-<h2 id="Segment-file"><a href="#Segment-file" class="headerlink" title="Segment file"></a>Segment file</h2><p>段文件存储的是数据信息, 你可以理解为Mysql的[[数据页]], 并且会定期进行^^段合并^^操作</p>
-<p>因ElasticSearch每秒定时器<a href="((wZ4Vu7UW9))">1</a> 影响. 并且代码中也可能会手动调用刷新操作. 这就会导致短时间内段文件数量会暴增. 而每一个段文件都会消耗文件句柄, 内存和cpu运行周期. <strong>更重要的是, 每个搜索请求都会轮询搜索每一个段, 所以段越多, 搜索越慢</strong></p>
+<h2 id="Segment-file"><a href="#Segment-file" class="headerlink" title="Segment file"></a>Segment file</h2><p>段文件存储的是数据信息, 你可以理解为Mysql的[[数据页]], 并且会定期进行<strong>段合并</strong>操作</p>
+<p>因ElasticSearch每秒定时器影响. 并且代码中也可能会手动调用刷新操作. 这就会导致短时间内段文件数量会暴增. 而每一个段文件都会消耗文件句柄, 内存和cpu运行周期. <strong>更重要的是, 每个搜索请求都会轮询搜索每一个段, 所以段越多, 搜索越慢</strong></p>
 <p>为了解决这种段文件越来越多的问题, ElasticSearch出现了<strong>段合并</strong>功能. 段合并会将那些旧的已删除的文档从文件系统中清除.</p>
 <p>段合并操作不需要我们手动配置, 在进行搜索时会自动进行</p>
 <h2 id="Index-Templates"><a href="#Index-Templates" class="headerlink" title="Index Templates"></a><strong>Index</strong> Templates</h2><p>在实际开发中, ElasticSearch很大一部分工作是用来处理日志信息的, 比如某公司对于日志处理策略是以日期为名创建每天的日志索引. 并且每天的索引映射类型和配置信息都是一样的, 只是索引名称改变了. 如果手动的创建每天的索引, 将会是一件很麻烦的事情. 为了解决类似问题, ElasticSearch提供了预先定义的模板进行索引创建, 这个模板称作为Index Templates. 通过索引模板可以让类似的索引重用同一个模板</p>
