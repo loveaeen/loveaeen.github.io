@@ -11,7 +11,7 @@ MapReduce: Simplified Data Processing on Large Clusters
 
 <!-- more -->
 
-[原始翻译版本网址：《MapReduce: Simplified Data Processing on Large Cluster 》翻译](https://www.cnblogs.com/YaoDD/p/6017397.html)
+[原始翻译版本网址：《MapReduce: Simplified Data Processing on Large Cluster 2004》翻译](https://www.cnblogs.com/YaoDD/p/6017397.html)
 
 ## Abstract
 
