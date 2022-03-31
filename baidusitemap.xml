@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://loveaeen.github.io/2022/03/30/Computer%20Science/Fault-Tolerant%20Virtual%20Machines/</loc>
+    <lastmod>2022-03-31</lastmod>
+  </url>
+  <url>
+    <loc>https://loveaeen.github.io/2022/03/27/Computer%20Science/MapReduce/</loc>
+    <lastmod>2022-03-31</lastmod>
+  </url>
+  <url>
     <loc>https://loveaeen.github.io/2022/03/29/Computer%20Science/GFS/</loc>
-    <lastmod>2022-03-29</lastmod>
+    <lastmod>2022-03-31</lastmod>
   </url>
   <url>
     <loc>https://loveaeen.github.io/2022/03/28/DataBase/Mysql/</loc>
@@ -94,10 +102,6 @@
   </url>
   <url>
     <loc>https://loveaeen.github.io/2022/03/28/Spring/Zipkin%20Sleuth/</loc>
-    <lastmod>2022-03-28</lastmod>
-  </url>
-  <url>
-    <loc>https://loveaeen.github.io/2022/03/27/Computer%20Science/MapReduce/</loc>
     <lastmod>2022-03-28</lastmod>
   </url>
   <url>

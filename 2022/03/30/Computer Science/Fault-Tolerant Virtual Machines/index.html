@@ -1,0 +1,491 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="The Design of a Practical System for Fault-Tolerant Virtual Machines - 基于容错虚拟机的实用系统设计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fault-Tolerant Virtual Machines">
+<meta property="og:url" content="https://loveaeen.github.io/2022/03/30/Computer%20Science/Fault-Tolerant%20Virtual%20Machines/index.html">
+<meta property="og:site_name" content="Loveaeen">
+<meta property="og:description" content="The Design of a Practical System for Fault-Tolerant Virtual Machines - 基于容错虚拟机的实用系统设计">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://loveaeen.github.io/image/Fault-Tolerant%20Virtual%20Machines/image-20220330204725217.png">
+<meta property="og:image" content="https://loveaeen.github.io/image/Fault-Tolerant%20Virtual%20Machines/image-20220331142544231.png">
+<meta property="article:published_time" content="2022-03-30T12:32:33.000Z">
+<meta property="article:modified_time" content="2022-03-31T06:43:07.266Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://loveaeen.github.io/image/Fault-Tolerant%20Virtual%20Machines/image-20220330204725217.png">
+  
+  
+    <meta name="google-site-verification" content="AFYmVbrqTDm4JPuzmWR2gYFKjKaIe7rUEuODopJnMLY" /><meta name="baidu-site-verification" content="code-IHNg05B7vK" />
+  
+  <title>Fault-Tolerant Virtual Machines - Loveaeen</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"loveaeen.github.io","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Loveaeen</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Fault-Tolerant Virtual Machines">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-30 20:32" pubdate>
+        2022年3月30日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.2k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      61 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Fault-Tolerant Virtual Machines</h1>
+            
+            <div class="markdown-body">
+              <p>The Design of a Practical System for Fault-Tolerant Virtual Machines - 基于容错虚拟机的实用系统设计</p>
+<span id="more"></span>
+
+<p><a target="_blank" rel="noopener" href="https://riverferry.site/2021-02-12-The-Design-of-a-Practical-System-for-Fault-Tolerant-Virtual-Machines/">原文翻译地址在这里</a></p>
+<p><a target="_blank" rel="noopener" href="https://pdos.csail.mit.edu/6.824/papers/vm-ft.pdf">原始论文地址 2010</a></p>
+<h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><p>通过提供故障容错性的虚拟机，我们已经实现了一个商业化的企业级系统，它建立在复制一个主虚拟机的执行过程到另一个服务器上的备份虚拟机的基础上。我们已经在VMware vSphere4.0上设计了一个完整的系统，它运行在商业用的服务器上，很容易使用，同时保证了应用的性能仅有少于10%的降低。另外，为了让主VM和次级VM的执行活动保持一致，对于几个实际的应用而言，需要的数据带宽少于20Mbit&#x2F;s，这也允许实现更长距离的故障容错的可能性。一种容易使用，在故障后自动恢复备份的商业化系统，在复制VM执行之前需要额外的组件。我们已经设计并且实现了这些额外的组件，并且解决了在支持VM运行企业级应用的时候，遇到的许多实际问题。在这篇文章中，我们描述了我们基础的设计，讨论了可替代的设计选择和很多实现的细节，并且针对微基准和真实应用，提供了性能结果。</p>
+<h2 id="1-INTRODUCTION"><a href="#1-INTRODUCTION" class="headerlink" title="1. INTRODUCTION"></a>1. INTRODUCTION</h2><p>一个实现容错服务器的常见方法是主备机制，如果主服务器失败，一个备份服务器总是可以进行接管。在任何时间，备份服务器的状态必须和主服务器几乎保持一致，因此当主服务器失败的时候，备份服务器可以立刻接管，此时对于外部客户端而言，故障就相当于被隐藏了起来，并且不会造成数据丢失。在备份服务器上复制状态的一种方法是将主服务器的所有状态，包括CPU、memory、IO设备，连续地送给备份服务器。然而，这种发送状态的方法，尤其是涉及到内存中的变更，其需要的带宽非常大。</p>
+<blockquote>
+<p>将 primary所有的状态，包括处理器、内存、IO 全部发送给backup；这种策略的困难在于，需要的带宽资源非常多，因为需要完全复制内存，内存上的数据都要发到 backup 上。</p>
+</blockquote>
+<p>另一种可以用更少带宽复制服务器的方法类似于状态机。这种思路是将服务器建模为确定性的状态机，他们从相同的初始状态开始，并且确保以相同的顺序接收相同的输入请求，这样就能保持同步。因为大多数服务器或服务有一些不确定性的操作，因此必须使用额外的协调机制来确保主备同步。然而，需要保持主备一致性的额外信息数目，远远少于正在变更的主服务器上状态（主要是内存更新）的数目。</p>
+<blockquote>
+<p>将主机视为确定性状态机，对于一个状态机，只有输入才能改变状态，没有输入状态是不会改变的。因此这种策略主要同步两台主机的输入，primary 和 backup 在同一个初始状态开始，让 primary 和 backup 获得相同的输入，这样两台主机就可以保持状态一致；这种策略的困难在于，处理同一个输入需要进行的操作具有不确定性，比如获取时钟，在 primary 上执行是一个结果，在 backup 上执行是另一个结果，这会导致两个主机的状态不一致。</p>
+</blockquote>
+<p>实现协调机制来确保物理服务器的确定性操作是困难的，尤其随着处理器频率增长。反之，一个运行在管理程序上的VM，是一个实现状态机方法的很好的平台。一个VM可以被当作一个定义好的状态机，它的操作是机器被虚拟化的操作（包括它所有的设备）。和物理服务器一样，VM有相同的非确定性操作（例如读取时钟或发送中断），因此为了保持同步，额外的信息必须被发送给备份服务器。管理程序有VM的全权控制权利，包括处理所有输入，因此它能够获得所有与主VM上的非确定性操作有关的必要信息，并且能正确地重放这些操作。</p>
+<p>因此，这个状态机方法可以通过商业化软件上的VM来实现，它不需要硬件更改，允许在最新的微处理器上立刻实现故障容错。另外，状态机方法需要的低带宽允许了主备服务器能更好地进行物理分隔。例如，被复制的VM可以运行在横跨一个学校的物理机器上，相比于运行在同一建筑内的VM而言，可以提供更多的可靠性。</p>
+<p>我们在VMware vSphere 4.0平台上使用主备机制实现了故障容忍的VMs，这个平台以一种高度有效的方式，运行着完全虚拟化的x86虚拟机。因为VMware vSphere实现了一个完整的x86虚拟机，所以我们自动地能够为任何x86操作系统和应用提供故障容忍。这种允许我们记录一个主服务器执行，并确保备份服务器一致执行的基础技术是<strong>确定性重放</strong><sup id="fnref:1" class="footnote-ref"><a href="#fn:1" rel="footnote"><span class="hint--top hint--rounded" aria-label="对于一系列输入，对主机的执行进行记录并确保备机以相同方式执行的基本技术称为确定性重放
+">[1]</span></a></sup>。VMware vSphere Fault Tolerance(FT)是基于确定性重放的，但是为了建立一个完整的故障容忍系统，还增加了必要的额外协议和功能。除了提供硬件故障容忍，我们的系统在一次失败后，通过在局部集群中任何可接受的服务器上开始一个新的备份虚拟机，进行自动地存储备份。目前确定性重放和VMare FT的产品版本只支持单处理器的VMs。多处理器VM的操作记录和重放还在开发中，因为每个共享内存的操作都是一个非确定性的操作，因此还有重要的性能问题待解决。</p>
+<p>Bressoud和Schneider描述了一个针对HP PA-RISC平台的故障容忍VMs的原型实现。我们的方法是相似的，但是出于性能原因，以及在调查了许多可替代设计后，我们已经做了一些基础性的改变。另外，为了建立一个完整的系统，而这个系统是有效的并且能够被正在运行企业级应用的客户使用，我们已经设计并实现了系统中许多额外的组件，可以处理许多实际问题。与大多数其他实际系统讨论的类似，我们只尝试应付fail-stop的故障，这是一种服务器故障，可以在故障服务器造成一次不正确的外部可见行为之前被检测。</p>
+<p>文章的剩余部分如下组织。首先，我们描述了我们基础的设计，并且详细说明了我们的基本协议，它能确保在主VM失败后，备份VM能够接替，且不会造成数据丢失。然后，我们描述了许多实际问题的细节，这些问题是为了建立一个强大的、完整的和自动化系统过程中必须被处理的。我们也描述了几个可用于实现故障容忍VMs的设计选择，并且讨论了这些选择的得失。接着，我们给出在一些基准以及实际企业级应用上的性能结果。最后，我们描述相关的工作和结论。</p>
+<h2 id="2-BASIC-FT-DESIGN"><a href="#2-BASIC-FT-DESIGN" class="headerlink" title="2. BASIC FT DESIGN"></a>2. BASIC FT DESIGN</h2><img src="/image/Fault-Tolerant%20Virtual%20Machines/image-20220330204725217.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>图1展示了我们系统在故障容忍VMs的基本步骤。对于一个给定的VM，我们希望提供故障容忍（主VM），我们在一个完全不同的物理机器上运行一个备份VM，保持和主VM同步并且执行一致，虽然存在短时间的滞后。我们说这两个VM是同步的。 VM的虚拟磁盘位于共享存储上(例如Fibre Channel或iSCSI磁盘阵列)，因此主VM和备份VM可以共同访问它们的输入和输出。 (我们将在第4.1节中讨论主VM和备份VM具有独立的非共享虚拟磁盘的设计。) 只有主VM通知它在网络上的存在，因此所有网络输入都进入主VM。 类似地，所有其他输入(如键盘和鼠标)都只进入主VM。</p>
+<p>主VM接收的所有输入都通过一个称为日志通道的网络连接发送到备份VM。 对于服务器工作负载，主要的输入流量是网络和磁盘。 为了确保备份VM以与主VM相同的方式执行非确定性操作，需要传输额外的信息(如下面的2.1节所述)。 结果是备份VM总是与主VM执行相同。 但是，备份VM的输出会被系统管理程序删除，因此只有主VM产生返回给客户机的实际输出。 如第2.2节所述，主VM和备份VM遵循特定的协议，包括备份VM的显式确认，以确保在主VM失败时不会丢失任何数据。</p>
+<p>为了检测主VM或备份VM是否失败，我们的系统使用相关服务器之间的心跳和日志通道上的流量监控的组合。 此外，我们必须确保主VM或备份VM中只有一个接管执行，即使出现主服务器和备份服务器彼此失去通信的脑裂情况。</p>
+<p>在下面的小节中，我们将提供几个重要领域的更多细节。 在第2.1节中，我们详细介绍了确定性重放技术，它确保主vm和备份vm通过日志通道发送的信息保持同步。 在第2.2节中，我们描述了我们的FT协议的一个基本规则，它确保在主节点失败时不会丢失数据。 在第2.3节中，我们描述了以正确的方式检测和响应故障的方法。</p>
+<h3 id="2-1-Deterministic-确定性-Replay-Implementation"><a href="#2-1-Deterministic-确定性-Replay-Implementation" class="headerlink" title="2.1 Deterministic 确定性 Replay Implementation"></a>2.1 Deterministic 确定性 Replay Implementation</h3><p>如前所述，复制服务器(或VM)的执行可以建模为确定性状态机的复制。 如果两个确定性状态机以相同的初始状态启动，并以相同的顺序提供完全相同的输入，那么它们将经历相同的状态序列并产生相同的输出。 虚拟机有一组广泛的输入，包括传入的网络数据包、磁盘读取以及键盘和鼠标输入。 非确定性事件(如虚拟中断)和非确定性操作(如读取处理器的时钟周期计数器)也会影响VM的状态。 这给复制执行任何操作系统和虚拟机运行工作负载提出了三个挑战:(1)正确捕获所有必要的输入和非确定性,确保确定性执行备份虚拟机,(2)正确应用备份虚拟机的输入和非确定性,(3)这样的方式不会降低性能。 此外，x86微处理器中的许多复杂操作都有不确定的副作用。 捕获这些未定义的副作用并将其重新播放以产生相同的状态是一个额外的挑战。</p>
+<p>VMware replay正是为VMware vSphere平台上的x86虚拟机提供了这一功能。 确定性重放来记录VM的输入和与VM执行相关的所有可能的不确定性，记录在日志文件的日志项流中。 稍后，通过从文件中读取日志项，可以准确地重放VM执行。 对于不确定的操作，将记录足够的信息，以允许使用相同的状态更改和输出复制操作。 对于不确定的事件，如定时器或IO完成中断，事件发生的确切指令也会被记录下来。 在重放期间，事件在指令流中的同一点被交付。 VMware确定性回放实现了一种高效的事件记录和事件传递机制，该机制采用了多种技术，包括使用与AMD和Intel联合开发的硬件性能计数器。</p>
+<p>Bressoud和Schneider提到将VM的执行划分为epoch，在其中，诸如中断之类的非确定性事件只在epoch结束时交付。 epoch的概念似乎被用作一种批处理机制，因为它太昂贵了，不能在每个中断发生的确切位置上分别交付它们。 但是，我们的事件交付机制非常有效，VMware的确定性重放不需要使用epoch。 每次中断发生时都会被记录下来，并在回放时有效地按适当的指令进行传送。</p>
+<h3 id="2-2-FT-Protocol-协议"><a href="#2-2-FT-Protocol-协议" class="headerlink" title="2.2 FT Protocol 协议"></a>2.2 FT Protocol 协议</h3><p>对于VMware FT，我们使用确定性重放来生成必要的日志项来记录主VM的执行，但是我们不将日志项写入磁盘，而是通过日志通道将它们发送到备份VM。 备份VM实时回放这些条目，因此与主VM执行相同。 但是，我们必须在日志通道上使用严格的FT协议来增加日志项，以确保实现容错。 我们的基本要求是:</p>
+<blockquote>
+<p>输出要求:如果备份 VM 在主要机器出现故障后接管，备份 VM 将继续执行，其执行方式将与主要 VM 发送到外部世界的所有输出完全一致。</p>
+</blockquote>
+<p>请注意，在发生故障转移之后(即，备份VM在主VM发生故障后接管)，备份VM的启动方式可能与主VM继续执行的方式非常不同，因为在执行期间会发生许多不确定的事件。 但是，只要备份VM满足输出要求，在故障转移到备份VM期间就不会丢失外部可见的状态或数据，客户机也不会注意到它们的服务中没有中断或不一致。</p>
+<p>输出要求可以通过延迟所有外部输出(通常是网络包)直到备机已经接受了所有信息(允许备机重放到至少输出操作的时刻)的时候。一个必要的条件是备机必须已经接收了所有的输出操作事先生成的日志项。这些日志项能够让备机执行到最后的日志项的时刻。然而，如果一个故障在主机执行输出操作的时候立刻发生。备机必须知道它必须一直重放到输出操作的时刻然后在那个时刻仅仅上线(停止重放并接管主机，像2.3节描述的那样)。如果备机在输出操作之前的最后的日志项的时刻上线，一些不确定性事件(比如传递给虚拟机的时钟中断)可能改变执行路径，在执行输出操作之前。</p>
+<p>鉴于上面的约束，执行输出要求的最简单方式是对每一个输出操作创建一个特殊的日志项。然后，输出要求可以通过这些特殊的规则被执行：</p>
+<blockquote>
+<p>输出规则：主机直到备机接收被确认了和产生输出相关联的日志项的时候，才发送输出给外部世界。</p>
+</blockquote>
+<p>如果备机已经接收了所有的日志项，包括输出产生操作的日志项，那么备机将能够准确的重现在该输出点上的主机的状态，即使主机宕了，备机仍能够正确的达到和该输出一致的状态。相反，如果备机在没有接收到所有必要的日志项的时候就接管了主机，则备机的状态可能很快偏离到和主机输出不一致的状态。输出规则在某些方面和提到的方法是类似的，其中外部同步IO可以被缓冲，只要在下一次外部通信前写入磁盘。</p>
+<p>注意输出规则没有说任何要通知主机执行的事情。我们只需要延迟发送输出，但是虚拟机可以继续执行。因为操作系统通过异步中断来非阻塞的表示网络和磁盘输出的完成，所以虚拟机只需要继续执行，并且不一定会立即受到输出延迟的影响。相反，先前的工作[3,9]通常表明在完成输出之前主机必须完全停止，直到备机已经确认了所有来自主机的必要信息。</p>
+<p><img src="/image/Fault-Tolerant%20Virtual%20Machines/image-20220331142544231.png" srcset="/img/loading.gif" lazyload alt="Figure 2: FT Protocol"></p>
+<p>作为例子，我们在图2中展示了一个图表说明容错协议的要求。该图展示了主机和备机上事件的时间线。主机线到备机线的箭头表示日志项的传输，备机线到主机线的箭头表示确认。异步事件的信息，输入，和输出操作都必须被发送给备机，以日志项的方式，然后由备机确认。如图中说明的那样，对于外部世界的输出会被延迟到主机已经接收到来自备机的确认信息，在备机收到和输出操作相关联的日志项的时候会进行确认。如果输出规则得以遵守，备机将能够以和主机最后输出一致性的状态进行接管。</p>
+<p>如[3,9]所表示的，我们不能保证所有的输出都只被生成一次在故障转移的情况下。在主机尝试发送输出的时候不适用两阶段提交事务的话，就没有办法让备机判断主机是在崩溃之前还是之后发送了最后的输出。幸运的是，网络基础设施(包括常用的tcp)被设计为能够处理丢包和重包。</p>
+<p>注意，传给主机的数据包在主机故障的时候也可能丢失因而不能被传递给备机。然而，传入的数据包可能出于一系列和服务器故障不相关的原因被丢弃，所以网络基础设施，操作系统和应用都被写入(意思应该是都要适配这个情况？ )来确保可以对丢失的包进行补偿。</p>
+<h3 id="2-3-Detecting-and-Responding-to-Failure"><a href="#2-3-Detecting-and-Responding-to-Failure" class="headerlink" title="2.3 Detecting and Responding to Failure"></a>2.3 Detecting and Responding to Failure</h3><p>如前面提到的那样，主机和备机必须在另一方故障的时候快速响应。如果备机故障，主机将会上线-指的是离开记录模式(因此停止在日志通道上发送日志项)并开始正常运行。如果主机故障，备机也会上线，但是处理会更加复杂一点。因为备机是延迟执行的，备机可能有一系列它已经接受和确认的的日志项，但是还没被消费完因为备机还没达到运行的合适时间点。备机必须继续重放来自日志项的运行直到消费完最后的日志项。然后备机将会停止重放模式然后开始正常运行，像普通虚拟机那样。本质上，备机已经被晋升为了主机(现在没有备机了)。因为已经不是备机了，新的主机将在guest os(运行在虚拟机上的操作系统)有输出操作的时候产生输出给外部世界。在过渡为正常模式的期间，可能会需要一些特定设备的操作来让输出正确发生。特别的，出于联网的目的，VMware容错会自动将新的主机的mac地址在网络进行通告，所以物理网络交换机将能够得知新的主机服务器的位置。另外，新的晋升的主机可能需要重发一些磁盘IO(像3.4节描述的那样)。</p>
+<p>对于尝试检测主机和备机故障有许多可能的方式。VMware容错使用运行在容错虚拟机上的服务器间的udp心跳包来检测哪台服务器已经宕掉了。另外，VMware容错监控从主机发给备机的日志和从备机发送给主机的确认信息的流量。因为经常的时钟中断，日志流量应该是规律的并且永远不会在guest os上停止。因此，日志项和确认信息流的暂停可能表明虚拟机或者网络问题引起的故障。如果心跳包或者日志通道流量停止了超过指定的超时时间(大约几秒钟)则表明这是故障。</p>
+<p>然而，任何这类故障检测方法都容易收到脑裂问题的影响。如果备机停止从主机接收心跳包，可能意味着主机故障了，也可能只是因为仍在运行的服务器间的所有网络连接都丢失了。如果备机接着在主机仍旧运行的情况下上线，这可能引起数据损坏或者客户端与虚拟机通信的问题。因此，我们必须确保只有一台主机或备机上线，在故障被检测到的时候。为了避免脑裂的问题，我们使用用来存储虚拟机虚拟磁盘的共享存储。在主机或备机想上线的时候，在共享存储上执行一个原子的test-and-set锁指令。如果操作指令成功，则虚拟机可以上线。如果指令失败，则另外的虚拟机肯定仍在运行，所以当前的虚拟机实际上会结束运行(提交suicide).如果虚拟机无法访问共享存储，在尝试做原子操作指令的时候，只需要一直等到可以访问的时候。记住如果共享存储因为一些存储网络故障导致不能访问，那么虚拟机可能无论如何都不能正常工作，因为虚拟机磁盘也在共享存储上面。因此，使用共享存储来解决脑裂问题不会带来任何额外的不可用。</p>
+<p>该设计的最后一个方面是一旦故障已经发生了并且其中一个虚拟机已经上线了，VMware容错会自动通过在另外主机上启动新的备机来恢复冗余。即使前面大部分没有提及这个过程，但是这一点对于实现有用的容错系统是基础的，并且需要仔细设计。更多的细节见3.1节。</p>
+<h3 id="2-4-Go-live-Points"><a href="#2-4-Go-live-Points" class="headerlink" title="2.4 Go-live Points"></a>2.4 Go-live Points</h3><p>为了容错使用的确定性重放驱使我们在重放实现中增加了一种有趣的机制。因为会有网络问题以及主机故障可能发生在任何时刻，由备机正在读取或者重放的日志项流也可能在任何时刻终止。日志项在任何时刻终止的可能性会扩散到确定性重放的实现，因为每一个日志项(比如一个虚拟的设备实现)的潜在消费者都需要检查和处理所需日志不可用的问题。比如，给定一个之前的日志项和它现在的状态，虚拟设备实现可能需要一系列有关IO实现的额外的日志项。需要编写重放部分的代码来检查日志流的结束，退出一些可能复杂的重放代码，回复设备到合理的状态，使之可以在虚拟机上go-live。</p>
+<h2 id="RELATED-READ"><a href="#RELATED-READ" class="headerlink" title="RELATED READ"></a>RELATED READ</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zzk0/p/13504580.html">[1] 楷哥的论文笔记</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/brianleelxt/p/13245754.html">[2] BrianLeeLXT的论文研读</a></p>
+<section class="footnotes"><div class="footnote-list"><ol><li><span id="fn:1" class="footnote-text"><span>对于一系列输入，对主机的执行进行记录并确保备机以相同方式执行的基本技术称为确定性重放
+<a href="#fnref:1" rev="footnote" class="footnote-backref"> ↩</a></span></span></li></ol></div></section>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Paper/">Paper</a>
+                    
+                  </div>
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/29/Class%20Note/MIT%206.824/">
+                        <span class="hidden-mobile">MIT 6.824</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

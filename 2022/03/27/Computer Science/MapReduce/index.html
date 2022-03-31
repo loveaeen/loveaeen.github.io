@@ -26,7 +26,7 @@
 <meta property="og:image" content="https://loveaeen.github.io/image/MapReduce/OS_3_1-20220327162940686.png">
 <meta property="og:image" content="https://loveaeen.github.io/image/MapReduce/OS_3_2-20220327170521059.png">
 <meta property="article:published_time" content="2022-03-27T07:32:33.000Z">
-<meta property="article:modified_time" content="2022-03-28T03:57:44.559Z">
+<meta property="article:modified_time" content="2022-03-31T05:59:16.775Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://loveaeen.github.io/image/MapReduce/OS_3_1-20220327162940686.png">
@@ -245,7 +245,7 @@
               <p>MapReduce: Simplified Data Processing on Large Clusters</p>
 <span id="more"></span>
 
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/YaoDD/p/6017397.html">原始翻译版本网址：《MapReduce: Simplified Data Processing on Large Cluster 》翻译</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/YaoDD/p/6017397.html">原始翻译版本网址：《MapReduce: Simplified Data Processing on Large Cluster 2004》翻译</a></p>
 <h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>MapReduce 是一种编程模型和一种用来处理和产生大数据集的相关实现。用户定义 map 函数（map function）来处理 key&#x2F;value 键值对来产生一系列的中间的 key&#x2F;value 键值对。还要定义一个 reduce 函数(reduce function)用来合并有着相同中间 key 值的中间 value。许多现实世界中的任务都可以用这种模型来表达，就像下文所展示的那样。</p>
 <p>用这个风格（函数式）编写的程序可以自动并行地在大规模集群上工作。运行时系统会自动处理例如切割输入数据，在机器之间调度程序的执行，处理机器故障以及管理必要的机器间通信等细节问题。这可以让那些对于并行分布式系统<strong>没有任何经验</strong>的程序员也能<strong>很简单</strong>地利用起一个大的分布式系统的资源。</p>
 <p>我们的 MapReduce 的实现运行在一个由大的商业机构成的集群当中并且是高度可扩展的：一个典型的 MapReduce 计算要在上千台机器中处理 TB 数量级的数据。程序员会觉得这个系统非常好用：已经有成千上万的 MapReduce 程序被实现出来并且每天有上千个 MapReduce 任务运行在 Google 的集群上。</p>
@@ -310,12 +310,12 @@
 <p>大多数的 Map 和 Reduce 操作都是确定性的，事实上，我们的语义等同于顺序执行。因此这让程序员非常容易地能够解释他们程序的行为。当 Map 和 Reduce 操作是非确定性的时候，我们提供较弱，但仍然合理的语义。在非确定性的操作中，对于一个特定的 Reduce task $R_1$ 的输出是对应非确定性程序顺序执行产生的一个结果。然而，对于另一个 Reduce task $R_2$，它的输出对应于非确定性程序另一个顺序执行的结果。</p>
 <p>下面考虑 Map task $M$和 Reduce task $R_1$和$R_2$。让$e(R_i)$表示$R_i$的执行结果。更弱的语义意味着，$e(R_1)$可能从 M 的一次执行结果中读取输入，而$e(R_2)$可能从 M 的另一次执行中读取输入。</p>
 <h3 id="Locality"><a href="#Locality" class="headerlink" title="Locality"></a>Locality</h3><p>网络带宽在我们的计算环境中是相对稀缺的资源。我们通过将输入数据（由 GFS 管理）存储在集群中每台机器的本地磁盘的方法来节省带宽。GFS 将输入文件切分成 64MB 大小的块，并且将每个块的多份拷贝（通常为 3 份）存储在不同的机器上。MapReduce 的 master 获取所有输入文件的位置信息，然后将 Map task 调度到有相应输入文件副本的机器上。当发生故障时，再将 Map task 调度到邻近的具有该 task 输入文件副本的机器（即在同一台交换机内具有相同数据的机器）。当在一个集群的大量机器上做 MapReduce 操作时，大多数的输入数据都是从本地读取的，而不用消耗带宽。</p>
-<h3 id="Task-Granularity"><a href="#Task-Granularity" class="headerlink" title="Task Granularity"></a>Task Granularity</h3><p>如上所述，我们将 Map 操作分成 M 份，Reduce 操作分成 R 份。在理想的情况下，M 和 R 的值应该要比集群中 worker machine 的数量多得多。让一个 worker 同时进行许多不同的 task 有利于提高动态的负载均衡，同时在一个 worker 故障的时候能尽快恢复。许多已经完成的 Map task 也能尽快地传播到其他所有的 worker machine 上。</p>
+<h3 id="Task-Granularity-粒度"><a href="#Task-Granularity-粒度" class="headerlink" title="Task Granularity 粒度"></a>Task Granularity 粒度</h3><p>如上所述，我们将 Map 操作分成 M 份，Reduce 操作分成 R 份。在理想的情况下，M 和 R 的值应该要比集群中 worker machine 的数量多得多。让一个 worker 同时进行许多不同的 task 有利于提高动态的负载均衡，同时在一个 worker 故障的时候能尽快恢复。许多已经完成的 Map task 也能尽快地传播到其他所有的 worker machine 上。</p>
 <p>在我们的实现中，M 和 R 的大小是有一个实用范围的。因为我们的 master 需要做$O(M+R)$个调度决定，并且还要在内存中保存$O(M * R)$个状态（源自前面所说：<strong>对于每一个已经完成的 Map task，master 会存储由它产生的 R 个中间文件的位置和大小。</strong>）。（但是内存使用的常数还是比较小的，$O(M*R)$个 Map task&#x2F;Reduce task 状态对，每个的大小大概在一个字节）</p>
 <p>另外，R通常受限于用户，因为每个 Reduce task 的输出都分散在不同的输出文件中。事实上，我们会选择M，使得每个输入文件大概 16MB 到 64MB 的输入文件（因此上文所述的局部性优化会达到最优，减少带宽负担，尽量利用本地存储数据进行 Map task）。而我们会让 R 成为 worker machine 数量的一个较小的倍数。因此，我们通常在进行 MapReduce 操作时，$M&#x3D;200000，R&#x3D;5000$，使用 2000 个 worker machine。</p>
 <h3 id="Backup-Tasks"><a href="#Backup-Tasks" class="headerlink" title="Backup Tasks"></a>Backup Tasks</h3><p>“straggler”（落伍的士兵）的存在是拖慢整个 MapReduce 操作的通常的原因之一。所谓的”straggler”是指一台机器用了过长的时间去完成整个计算任务中最后几个 Map task 或者 Reduce task。Straggler 出现的原因有很多。比如一台机器上硬盘坏了，它就会经历大量的可纠正错误，从而让它的性能从 30MB&#x2F;s 下降到 1MB&#x2F;s。集群的调度系统可能将其他 task 调度到该机器上，导致它执行 MapReduce 代码的速度变慢很多，因为 CPU，内存，本地磁盘，网络带宽的竞争加剧。我们最近遇到的一个问题是一台机器的初始化代码有点问题，它会导致处理器的缓存被禁用，在这些受影响的机器上进行的计算速度会下降到原来的百分之一。（ping 得到不判定为故障机，但是自身速度过慢会拖累整体，出现短板效应）</p>
 <p>对此，我们有一个通用的机制用来缓解 straggler 的问题。当 MapReduce 操作接近结束的时候，master 会将那些仍在执行的 task 的备份进行调度执行。无论是原来的还是备份执行完成，该 task 都将被标记为已完成。我们通过调整将该操作导致的计算资源消耗仅仅提高了几个百分点（只在即将结束的时候进行备份竞争执行）。但是在完成大型的 MapReduce 操作时，却让整个执行时间下降了好多。例如，Section 5.3 中所描述的排序算法在备份机制关闭的情况下，需要多消耗 44%的时间。</p>
-<h2 id="Refinements"><a href="#Refinements" class="headerlink" title="Refinements"></a>Refinements</h2><p>虽然对于大多数需求由 Map 和 Reduce 函数提供的功能已经足够了，但是我们还是发现了一些有用的扩展。对它们的描述如下。</p>
+<h2 id="Refinements-优化"><a href="#Refinements-优化" class="headerlink" title="Refinements 优化"></a>Refinements 优化</h2><p>虽然对于大多数需求由 Map 和 Reduce 函数提供的功能已经足够了，但是我们还是发现了一些有用的扩展。对它们的描述如下。</p>
 <h3 id="Partitioning-Function"><a href="#Partitioning-Function" class="headerlink" title="Partitioning Function"></a>Partitioning Function</h3><p>MapReduce 用户决定他们的 Reduce task 或者输出文件的数目 R。通过一个划分函数，根据中间键值将各个 task 的数据进行划分。默认的划分函数是通过哈希（比如，hash(key) mod R）。这通常会产生非常好的较为均衡的划分。但是在其他一些情况下，通过键值的其他函数来划分要更好一些。例如，有的时候输出键值是一些 URL，我们希望同一个 host 的内容能放在同一个输出文件中。为了支持这种情况，MapReduce 库的用户可以提供一个特殊的划分函数。例如，使用“hash(Hostname(urlKey)) mod R”作为划分函数，从而让所有来自于同一个 host 的 URL 的内容都输出到同一个输出文件。</p>
 <p>（个人理解，hash 之前可以根据需求（key 的相似性、urlhost 相同）对 key 提前进行一次分组）</p>
 <h3 id="Ordering-Guarantees"><a href="#Ordering-Guarantees" class="headerlink" title="Ordering Guarantees"></a>Ordering Guarantees</h3><p>我们确保在一个给定的划分中，中间键值对都按照键值的升序进行处理。这样的处理顺序确保了每一个划分产生一个排好序的输出文件。这样的话，如果输出文件格式需要支持根据 key 进行有效的随机查找会比较方便。同时，输出文件（应用）的用户也会觉得已经排好序的数据使用起来特别方便。</p>

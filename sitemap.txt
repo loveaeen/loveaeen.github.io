@@ -1,3 +1,5 @@
+https://loveaeen.github.io/2022/03/30/Computer%20Science/Fault-Tolerant%20Virtual%20Machines/
+https://loveaeen.github.io/2022/03/27/Computer%20Science/MapReduce/
 https://loveaeen.github.io/2022/03/29/Computer%20Science/GFS/
 https://loveaeen.github.io/2022/03/28/DataBase/Mysql/
 https://loveaeen.github.io/2022/03/29/Class%20Note/MIT%206.824/
@@ -22,7 +24,6 @@ https://loveaeen.github.io/2022/03/28/Distributed%20System/OpenResty/
 https://loveaeen.github.io/2022/03/28/Distributed%20System/Oauth2/
 https://loveaeen.github.io/2022/03/28/Spring/Shiro/
 https://loveaeen.github.io/2022/03/28/Spring/Zipkin%20Sleuth/
-https://loveaeen.github.io/2022/03/27/Computer%20Science/MapReduce/
 https://loveaeen.github.io/2022/03/28/Distributed%20System/SSO%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/
 https://loveaeen.github.io/2022/03/28/Spring/Spring%20Security%20Oauth/
 https://loveaeen.github.io/2022/03/28/Spring/Spring%20Security/
