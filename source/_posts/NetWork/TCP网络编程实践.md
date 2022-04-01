@@ -8,6 +8,8 @@ typora-root-url: ../../
 
 本文不会涉及TCP的各个基础知识点，主要是总结一些TCP网络编程实践中可能碰到的一些问题，以及相应的经过实践验证的解决方案等。虽然本文档很多细节主要是针对于Linux系统，不过，大部分建议适合于所有系统。
 
+![img](/image/TCP%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/tcp_state.png)
+
 ## 1. 服务端监听设置SO_REUSEADDR选项
 
 当我们重启服务端程序的时候可能会碰到 “address already in use” 这样的报错信息，即地址已被使用，导致程序无法快速成功重启。老的进程关闭退出了，为什么还会报地址已被使用呢？
@@ -68,6 +70,10 @@ TIME_WAIT存在的意义主要有两点：
 对于批量写操作还有一个优点，就是可以避免[Nagle算法](https://en.wikipedia.org/wiki/Nagle's_algorithm)带来的延迟（一般也不建议开启Nagle算法）。假如当前写缓冲区中没有数据，我们先通过write写4个字节，这时TCP协议栈将其发送出去，然后再通过write写96个字节，这时，由于前面发送了一个报文，还没有收到ACK，并且当前可发送数据未达到MSS，Nagle算法不允许继续发送报文，必须等到前一个报文的ACK回来才能继续发送数据，大大降低了吞吐量并且提高了延迟。如果接收端开启了[延迟ACK](https://en.wikipedia.org/wiki/TCP_delayed_acknowledgment)，影响更大。
 
 因此，应该尽量批量读写网络数据，以提升性能。
+
+## 4. TIME_WAIT解析
+
+
 
 ## RELATED WORK
 
