@@ -103,9 +103,21 @@ theme: fluid
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: git
+- type: git
   repo: 
     github: https://github.com/loveaeen/loveaeen.github.io.git
     coding: git@e.coding.net:loveaeen/loveaeen/loveaeen.git
   branch: main
   ignore_hidden: false
+- type: baidu_url_submitter ## 百度主动提交
+# 站点地图配置
+sitemap:
+  path: sitemap.xml
+baidusitemap:
+  path: baidusitemap.xml
+# 百度主动提交
+baidu_url_submit:
+  count: 100 # 提交最新的10个链接
+  host: https://loveaeen.github.io # 百度站长平台中注册的域名
+  token: ZC9aNGOBFpgnc2vd # 秘钥，百度站长平台 > 推送接口 > 接口调用地址中token字段
+  path: baidu_urls.txt # 文本文档的地址， 新链接会保存在此文本文档里，不用改
