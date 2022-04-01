@@ -8,8 +8,6 @@ typora-root-url: ../../
 
 本文不会涉及TCP的各个基础知识点，主要是总结一些TCP网络编程实践中可能碰到的一些问题，以及相应的经过实践验证的解决方案等。虽然本文档很多细节主要是针对于Linux系统，不过，大部分建议适合于所有系统。
 
-![img](/image/TCP%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/tcp_state.png)
-
 ## 1. 服务端监听设置SO_REUSEADDR选项
 
 当我们重启服务端程序的时候可能会碰到 “address already in use” 这样的报错信息，即地址已被使用，导致程序无法快速成功重启。老的进程关闭退出了，为什么还会报地址已被使用呢？
@@ -73,7 +71,13 @@ TIME_WAIT存在的意义主要有两点：
 
 ## 4. TIME_WAIT解析
 
+![img](/image/TCP%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/tcp_state.png)
 
+### 定义
+
+我们从上面的图中可以看出来，当 TCP 连接主动关闭时，都会经过 TIME_WAIT 状态。而且我们在机器上 curl 一个 url 创建一个 TCP 连接后，使用 ss 等工具可以在一定时长内持续观察到这个连接处于 TIME_WAIT 状态。
+
+所以TIME_WAIT 是这么一种状态：TCP 四次握手结束后，连接双方都不再交换消息，但主动关闭的一方保持这个连接在一段时间内不可用。
 
 ## RELATED WORK
 
