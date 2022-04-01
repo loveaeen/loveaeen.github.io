@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://loveaeen.com/2022/03/30/Computer%20Science/Fault-Tolerant%20Virtual%20Machines/</loc>
+    <loc>https://loveaeen.com/2022/03/30/Paper/Fault-Tolerant%20Virtual%20Machines/</loc>
+    <lastmod>2022-04-01</lastmod>
+  </url>
+  <url>
+    <loc>https://loveaeen.com/2022/04/01/NetWork/TCP%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/</loc>
+    <lastmod>2022-04-01</lastmod>
+  </url>
+  <url>
+    <loc>https://loveaeen.com/2022/03/27/Paper/MapReduce/</loc>
     <lastmod>2022-03-31</lastmod>
   </url>
   <url>
-    <loc>https://loveaeen.com/2022/03/27/Computer%20Science/MapReduce/</loc>
-    <lastmod>2022-03-31</lastmod>
-  </url>
-  <url>
-    <loc>https://loveaeen.com/2022/03/29/Computer%20Science/GFS/</loc>
+    <loc>https://loveaeen.com/2022/03/29/Paper/GFS/</loc>
     <lastmod>2022-03-31</lastmod>
   </url>
   <url>

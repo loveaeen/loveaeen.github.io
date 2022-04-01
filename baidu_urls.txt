@@ -1,6 +1,7 @@
-https://loveaeen.com/2022/03/30/Computer%20Science/Fault-Tolerant%20Virtual%20Machines/
+https://loveaeen.com/2022/04/01/NetWork/TCP%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/
+https://loveaeen.com/2022/03/30/Paper/Fault-Tolerant%20Virtual%20Machines/
 https://loveaeen.com/2022/03/29/Class%20Note/MIT%206.824/
-https://loveaeen.com/2022/03/29/Computer%20Science/GFS/
+https://loveaeen.com/2022/03/29/Paper/GFS/
 https://loveaeen.com/2022/03/28/Container/ETCD/
 https://loveaeen.com/2022/03/28/Container/Istio/
 https://loveaeen.com/2022/03/28/Container/Rancher/
@@ -38,5 +39,5 @@ https://loveaeen.com/2022/03/28/Spring/Spring%20Security%20Oauth/
 https://loveaeen.com/2022/03/28/Spring/Spring%20Security/
 https://loveaeen.com/2022/03/28/Spring/Zipkin%20Sleuth/
 https://loveaeen.com/2022/03/28/hello-world/
-https://loveaeen.com/2022/03/27/Computer%20Science/MapReduce/
+https://loveaeen.com/2022/03/27/Paper/MapReduce/
 https://loveaeen.com/2022/03/26/git/hexo%E5%A4%9A%E7%AB%AF%E5%90%8C%E6%AD%A5/
