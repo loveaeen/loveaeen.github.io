@@ -91,6 +91,7 @@ pagination_dir: page
 # Include / Exclude file(s)
 ## include:/exclude: options only apply to the 'source/' folder
 include:
+  - .nojekyll
 exclude:
 ignore:
 
@@ -107,3 +108,4 @@ deploy:
     github: https://github.com/loveaeen/loveaeen.github.io.git
     coding: git@e.coding.net:loveaeen/loveaeen/loveaeen.git
   branch: main
+  ignore_hidden: false
