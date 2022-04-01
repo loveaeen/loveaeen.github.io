@@ -16,19 +16,20 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本文不会涉及TCP的各个基础知识点，主要是总结一些TCP网络编程实践中可能碰到的一些问题，以及相应的经过实践验证的解决方案等。虽然本文档很多细节主要是针对于Linux系统，不过，大部分建议适合于所有系统。 1. 服务端监听设置SO_REUSEADDR选项当我们重启服务端程序的时候可能会碰到 “address already in use” 这样的报错信息，即地址已被使用，导致程序无法快速成功重启。">
+    <meta name="description" content="本文不会涉及TCP的各个基础知识点，主要是总结一些TCP网络编程实践中可能碰到的一些问题，以及相应的经过实践验证的解决方案等。虽然本文档很多细节主要是针对于Linux系统，不过，大部分建议适合于所有系统。  1. 服务端监听设置SO_REUSEADDR选项当我们重启服务端程序的时候可能会碰到 “address already in use” 这样的报错信息，即地址已被使用，导致程序无法快速成功重启">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TCP网络编程实践">
 <meta property="og:url" content="https://loveaeen.com/2022/04/01/NetWork/TCP%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/index.html">
 <meta property="og:site_name" content="Loveaeen">
-<meta property="og:description" content="本文不会涉及TCP的各个基础知识点，主要是总结一些TCP网络编程实践中可能碰到的一些问题，以及相应的经过实践验证的解决方案等。虽然本文档很多细节主要是针对于Linux系统，不过，大部分建议适合于所有系统。 1. 服务端监听设置SO_REUSEADDR选项当我们重启服务端程序的时候可能会碰到 “address already in use” 这样的报错信息，即地址已被使用，导致程序无法快速成功重启。">
+<meta property="og:description" content="本文不会涉及TCP的各个基础知识点，主要是总结一些TCP网络编程实践中可能碰到的一些问题，以及相应的经过实践验证的解决方案等。虽然本文档很多细节主要是针对于Linux系统，不过，大部分建议适合于所有系统。  1. 服务端监听设置SO_REUSEADDR选项当我们重启服务端程序的时候可能会碰到 “address already in use” 这样的报错信息，即地址已被使用，导致程序无法快速成功重启">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://loveaeen.com/image/TCP%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/tcp_state.png">
 <meta property="og:image" content="https://loveaeen.com/image/TCP%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/tcp_close.png">
 <meta property="article:published_time" content="2022-04-01T07:32:33.000Z">
-<meta property="article:modified_time" content="2022-04-01T07:10:22.301Z">
+<meta property="article:modified_time" content="2022-04-01T09:07:13.424Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://loveaeen.com/image/TCP%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/tcp_close.png">
+<meta name="twitter:image" content="https://loveaeen.com/image/TCP%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/tcp_state.png">
   
   
     <meta name="google-site-verification" content="uBAvxkxwRPC5l9JkRVOg5F8DR4WVnHGF3VHbVR-5Os0" /><meta name="baidu-site-verification" content="code-npT3yF5asu" />
@@ -242,6 +243,7 @@
             
             <div class="markdown-body">
               <p>本文不会涉及TCP的各个基础知识点，主要是总结一些TCP网络编程实践中可能碰到的一些问题，以及相应的经过实践验证的解决方案等。虽然本文档很多细节主要是针对于Linux系统，不过，大部分建议适合于所有系统。</p>
+<p><img src="/image/TCP%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/tcp_state.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <h2 id="1-服务端监听设置SO-REUSEADDR选项"><a href="#1-服务端监听设置SO-REUSEADDR选项" class="headerlink" title="1. 服务端监听设置SO_REUSEADDR选项"></a>1. 服务端监听设置SO_REUSEADDR选项</h2><p>当我们重启服务端程序的时候可能会碰到 “address already in use” 这样的报错信息，即地址已被使用，导致程序无法快速成功重启。老的进程关闭退出了，为什么还会报地址已被使用呢？</p>
 <p>我们先来理解如下两点：</p>
 <ul>
@@ -283,7 +285,7 @@
 </ul>
 <p>对于批量写操作还有一个优点，就是可以避免<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Nagle's_algorithm">Nagle算法</a>带来的延迟（一般也不建议开启Nagle算法）。假如当前写缓冲区中没有数据，我们先通过write写4个字节，这时TCP协议栈将其发送出去，然后再通过write写96个字节，这时，由于前面发送了一个报文，还没有收到ACK，并且当前可发送数据未达到MSS，Nagle算法不允许继续发送报文，必须等到前一个报文的ACK回来才能继续发送数据，大大降低了吞吐量并且提高了延迟。如果接收端开启了<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/TCP_delayed_acknowledgment">延迟ACK</a>，影响更大。</p>
 <p>因此，应该尽量批量读写网络数据，以提升性能。</p>
-<h2 id="RELATED-WORK"><a href="#RELATED-WORK" class="headerlink" title="RELATED WORK"></a>RELATED WORK</h2><p><a target="_blank" rel="noopener" href="https://tech.youzan.com/you-zan-tcpwang-luo-bian-cheng-zui-jia-shi-jian/">有赞TCP网络编程最佳实践</a></p>
+<h2 id="4-TIME-WAIT解析"><a href="#4-TIME-WAIT解析" class="headerlink" title="4. TIME_WAIT解析"></a>4. TIME_WAIT解析</h2><h2 id="RELATED-WORK"><a href="#RELATED-WORK" class="headerlink" title="RELATED WORK"></a>RELATED WORK</h2><p><a target="_blank" rel="noopener" href="https://tech.youzan.com/you-zan-tcpwang-luo-bian-cheng-zui-jia-shi-jian/">有赞TCP网络编程最佳实践</a></p>
 
             </div>
             <hr>
