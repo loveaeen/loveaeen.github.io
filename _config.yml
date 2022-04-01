@@ -13,7 +13,7 @@ timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: https://loveaeen.github.io
+url: https://loveaeen.com
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -118,6 +118,6 @@ baidusitemap:
 # 百度主动提交
 baidu_url_submit:
   count: 100 # 提交最新的10个链接
-  host: https://loveaeen.github.io # 百度站长平台中注册的域名
+  host: https://loveaeen.com # 百度站长平台中注册的域名
   token: ZC9aNGOBFpgnc2vd # 秘钥，百度站长平台 > 推送接口 > 接口调用地址中token字段
   path: baidu_urls.txt # 文本文档的地址， 新链接会保存在此文本文档里，不用改

@@ -13,7 +13,7 @@ timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: http://example.com
+url: https://loveaeen.com
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -99,7 +99,7 @@ ignore:
 ## Themes: https://hexo.io/themes/
 theme: fluid
 # google搜索
-custom_head: '<meta name="google-site-verification" content="AFYmVbrqTDm4JPuzmWR2gYFKjKaIe7rUEuODopJnMLY" /><meta name="baidu-site-verification" content="code-IHNg05B7vK" />'
+custom_head: '<meta name="google-site-verification" content="uBAvxkxwRPC5l9JkRVOg5F8DR4WVnHGF3VHbVR-5Os0" /><meta name="baidu-site-verification" content="code-npT3yF5asu" />'
 # 左上角标题文字
 navbar:
   blog_title: Loveaeen
