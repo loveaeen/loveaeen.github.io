@@ -19,27 +19,27 @@
     <meta name="description" content="Google File System，一个适用于大规模分布式数据处理相关应用的，可扩展的分布式文件系统。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GFS">
-<meta property="og:url" content="https://loveaeen.github.io/2022/03/29/Computer%20Science/GFS/index.html">
+<meta property="og:url" content="https://loveaeen.com/2022/03/29/Computer%20Science/GFS/index.html">
 <meta property="og:site_name" content="Loveaeen">
 <meta property="og:description" content="Google File System，一个适用于大规模分布式数据处理相关应用的，可扩展的分布式文件系统。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://loveaeen.github.io/image/GFS/WX20220329-180128@2x.png">
-<meta property="og:image" content="https://loveaeen.github.io/image/GFS/09113934-0769397dafac49b7950284959c0fcc38.png">
-<meta property="og:image" content="https://loveaeen.github.io/image/GFS/09113940-dc2039a6f61f42e3b167722bf203cde4.png">
-<meta property="og:image" content="https://loveaeen.github.io/image/GFS/image-20220330154901599.png">
-<meta property="og:image" content="https://loveaeen.github.io/image/GFS/image-20220330154835412.png">
-<meta property="og:image" content="https://loveaeen.github.io/image/GFS/image-20220330155632174.png">
-<meta property="og:image" content="https://loveaeen.github.io/image/GFS/image-20220330194111553.png">
-<meta property="og:image" content="https://loveaeen.github.io/image/GFS/image-20220330194303246.png">
-<meta property="og:image" content="https://loveaeen.github.io/image/GFS/image-20220330194852455.png">
-<meta property="og:image" content="https://loveaeen.github.io/image/GFS/image-20220330201151094.png">
-<meta property="og:image" content="https://loveaeen.github.io/image/GFS/image-20220330201313433.png">
-<meta property="og:image" content="https://loveaeen.github.io/image/GFS/image-20220330201411626.png">
+<meta property="og:image" content="https://loveaeen.com/image/GFS/WX20220329-180128@2x.png">
+<meta property="og:image" content="https://loveaeen.com/image/GFS/09113934-0769397dafac49b7950284959c0fcc38.png">
+<meta property="og:image" content="https://loveaeen.com/image/GFS/09113940-dc2039a6f61f42e3b167722bf203cde4.png">
+<meta property="og:image" content="https://loveaeen.com/image/GFS/image-20220330154901599.png">
+<meta property="og:image" content="https://loveaeen.com/image/GFS/image-20220330154835412.png">
+<meta property="og:image" content="https://loveaeen.com/image/GFS/image-20220330155632174.png">
+<meta property="og:image" content="https://loveaeen.com/image/GFS/image-20220330194111553.png">
+<meta property="og:image" content="https://loveaeen.com/image/GFS/image-20220330194303246.png">
+<meta property="og:image" content="https://loveaeen.com/image/GFS/image-20220330194852455.png">
+<meta property="og:image" content="https://loveaeen.com/image/GFS/image-20220330201151094.png">
+<meta property="og:image" content="https://loveaeen.com/image/GFS/image-20220330201313433.png">
+<meta property="og:image" content="https://loveaeen.com/image/GFS/image-20220330201411626.png">
 <meta property="article:published_time" content="2022-03-29T02:32:33.000Z">
 <meta property="article:modified_time" content="2022-03-31T01:07:58.490Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://loveaeen.github.io/image/GFS/WX20220329-180128@2x.png">
+<meta name="twitter:image" content="https://loveaeen.com/image/GFS/WX20220329-180128@2x.png">
   
   
     <meta name="google-site-verification" content="AFYmVbrqTDm4JPuzmWR2gYFKjKaIe7rUEuODopJnMLY" /><meta name="baidu-site-verification" content="code-IHNg05B7vK" />
@@ -81,7 +81,7 @@
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
-    var CONFIG = {"hostname":"loveaeen.github.io","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"loveaeen.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
