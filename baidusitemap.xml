@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://loveaeen.com/2022/04/02/Work/%E7%99%BE%E5%BA%A6Ueditor%E8%BF%81%E7%A7%BB%E8%BF%87%E7%A8%8B/</loc>
-    <lastmod>2022-04-18</lastmod>
-  </url>
-  <url>
     <loc>https://loveaeen.com/2022/03/30/Paper/Fault-Tolerant%20Virtual%20Machines/</loc>
     <lastmod>2022-04-02</lastmod>
   </url>
@@ -113,19 +109,7 @@
     <lastmod>2022-03-28</lastmod>
   </url>
   <url>
-    <loc>https://loveaeen.com/2022/03/28/Spring/Zipkin%20Sleuth/</loc>
-    <lastmod>2022-03-28</lastmod>
-  </url>
-  <url>
     <loc>https://loveaeen.com/2022/03/28/Distributed%20System/SSO%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/</loc>
-    <lastmod>2022-03-28</lastmod>
-  </url>
-  <url>
-    <loc>https://loveaeen.com/2022/03/28/Spring/Spring%20Security%20Oauth/</loc>
-    <lastmod>2022-03-28</lastmod>
-  </url>
-  <url>
-    <loc>https://loveaeen.com/2022/03/28/Spring/Spring%20Security/</loc>
     <lastmod>2022-03-28</lastmod>
   </url>
   <url>
@@ -141,31 +125,11 @@
     <lastmod>2022-03-28</lastmod>
   </url>
   <url>
-    <loc>https://loveaeen.com/2022/03/28/Spring/Mybatis/</loc>
-    <lastmod>2022-03-28</lastmod>
-  </url>
-  <url>
     <loc>https://loveaeen.com/2022/03/28/Spring/Hikari/</loc>
     <lastmod>2022-03-28</lastmod>
   </url>
   <url>
-    <loc>https://loveaeen.com/2022/03/28/Spring/Ribbon/</loc>
-    <lastmod>2022-03-28</lastmod>
-  </url>
-  <url>
-    <loc>https://loveaeen.com/2022/03/28/Spring/Mycat/</loc>
-    <lastmod>2022-03-28</lastmod>
-  </url>
-  <url>
     <loc>https://loveaeen.com/2022/03/28/Spring/Hystrix/</loc>
-    <lastmod>2022-03-28</lastmod>
-  </url>
-  <url>
-    <loc>https://loveaeen.com/2022/03/28/Spring/GateWay/</loc>
-    <lastmod>2022-03-28</lastmod>
-  </url>
-  <url>
-    <loc>https://loveaeen.com/2022/03/28/Spring/Feign/</loc>
     <lastmod>2022-03-28</lastmod>
   </url>
   <url>
