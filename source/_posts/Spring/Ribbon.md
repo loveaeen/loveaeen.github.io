@@ -3,6 +3,7 @@ title: Ribbon
 date: 2022-03-28 09:43:12
 excerpt: Spring cloud Ribbon是一个基于HTTP和TCP的客户端负载均衡工具,它是基于Netflix的Riboon实现的。
 categories: Spring Cloud
+hide: true
 tags: 
 ---
 

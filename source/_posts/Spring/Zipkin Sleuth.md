@@ -3,6 +3,7 @@ title: Zipkin Sleuth
 date: 2022-03-28 09:43:12
 excerpt: Spring Cloud Sleuth 是分布式系统中跟踪服务间调用的工具，它可以直观地展示出一次请求的调用过程。
 categories: Spring Cloud
+hide: true
 tags: 
 ---
 

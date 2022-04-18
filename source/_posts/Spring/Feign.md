@@ -3,6 +3,7 @@ title: Feign
 date: 2022-03-28 09:43:12
 excerpt: Feign是一个基于注解来生成HTTP请求，并且能自动处理请求返回的工具。
 categories: Spring Cloud
+hide: true
 tags: 
 ---
 
